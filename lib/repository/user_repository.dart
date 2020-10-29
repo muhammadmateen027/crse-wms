@@ -20,7 +20,7 @@ class UserRepository implements UserRepositoryInterface {
 
   @override
   Future<bool> hasToken(String key) async {
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(seconds: 2));
     try {
       String token = await storage.read(key: key) ?? null;
       if (token != null) {

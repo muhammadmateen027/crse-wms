@@ -30,6 +30,7 @@ class AuthenticationBloc
 
   Stream<AuthenticationState> _authenticationToState(
       AuthenticationStarted event) async* {
+    yield AuthenticationLoading();
     bool hasToken = await userRepositoryInterface.hasToken(DotEnv().env['TOKEN']);
     if (hasToken) {
       yield AuthenticationAuthenticated();

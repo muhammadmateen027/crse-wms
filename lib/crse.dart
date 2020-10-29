@@ -21,11 +21,8 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        initialRoute: '/',
-        routes: {
-          '/': (context) => Splash(),
-          '/homePage': (context) => MyHomePage(title: 'Flutter Demo Home Page'),
-        },
+        initialRoute: RoutesName.initial,
+        onGenerateRoute: RouteGenerator.generateRoute,
       ),
     );
   }
