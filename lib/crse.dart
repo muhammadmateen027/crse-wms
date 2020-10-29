@@ -7,6 +7,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: Colors.black,
+      statusBarBrightness: Brightness.light,
+    ));
     return MultiBlocProvider(
       providers: [
         BlocProvider<AuthenticationBloc>(

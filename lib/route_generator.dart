@@ -13,6 +13,12 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => Splash());
         break;
 
+      case RoutesName.login:
+        return MaterialPageRoute(
+          builder: (_) => LoginForm(),
+        );
+        break;
+
       case RoutesName.home:
         return MaterialPageRoute(
           builder: (_) => MyHomePage(title: 'Flutter Demo Home Page'),

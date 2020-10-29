@@ -10,3 +10,11 @@ abstract class AuthenticationEvent {
 class AuthenticationStarted extends AuthenticationEvent {}
 
 class FetchUserEvent extends AuthenticationEvent {}
+
+class FormSubmit extends AuthenticationEvent {
+  final String email;
+  final String password;
+  const FormSubmit({@required this.email, @required this.password});
+  @override
+  List<Object> get props => [email, password];
+}
