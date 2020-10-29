@@ -1,8 +1,7 @@
 import 'package:crsewms/authentication/authentication.dart';
+import 'package:crsewms/home/home.dart';
 import 'package:crsewms/routes_name.dart';
 import 'package:flutter/material.dart';
-
-import 'main.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings setting) {
@@ -21,7 +20,7 @@ class RouteGenerator {
 
       case RoutesName.home:
         return MaterialPageRoute(
-          builder: (_) => MyHomePage(title: 'Flutter Demo Home Page'),
+          builder: (_) => OrderList(),
         );
         break;
       default:

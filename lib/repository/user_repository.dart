@@ -35,6 +35,11 @@ class UserRepository implements UserRepositoryInterface {
   }
 
   @override
+  Future<String> retrieveToken(String key) async {
+    return await storage.read(key: key) ?? null;
+  }
+
+  @override
   Future<void> persistToken(String key, String value) async {
     return await storage.write(key: key, value: value);
   }
@@ -45,6 +50,15 @@ class UserRepository implements UserRepositoryInterface {
       '${DotEnv().env['API_URL']}/login',
       '',
       data: {'email': email, 'password': password},
+    );
+  }
+
+  @override
+  Future<Response> orderList(Map data) async {
+    return await dataProviderClient.post(
+      '${DotEnv().env['API_URL']}/list',
+      '',
+      data: data,
     );
   }
 }
