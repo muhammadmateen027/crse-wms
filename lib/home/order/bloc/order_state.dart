@@ -24,3 +24,11 @@ class OrdersFetchedState extends OrderState {
   List<Object> get props => [orders];
 }
 class NoOrderListState extends OrderState {}
+
+
+class OrderDetailState extends OrderState {
+  final OrderDetail orderDetail;
+  const OrderDetailState({@required this.orderDetail});
+  @override
+  List<Object> get props => [orderDetail];
+}

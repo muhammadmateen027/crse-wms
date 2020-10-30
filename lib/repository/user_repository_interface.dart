@@ -9,4 +9,5 @@ abstract class UserRepositoryInterface {
   Future<Response> login(String email, String password);
 
   Future<Response> orderList(Map data);
+  Future<Response> orderDetail(Map data);
 }

@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings setting) {
-    // TODO: use if require
-    // final args = setting.arguments;
+    final args = setting.arguments;
     switch (setting.name) {
       case RoutesName.initial:
         return MaterialPageRoute(builder: (_) => Splash());
@@ -21,6 +20,12 @@ class RouteGenerator {
       case RoutesName.home:
         return MaterialPageRoute(
           builder: (_) => OrderList(),
+        );
+        break;
+
+      case RoutesName.detail:
+        return MaterialPageRoute(
+          builder: (_) => OrderDetailPage(arguments: args),
         );
         break;
       default:

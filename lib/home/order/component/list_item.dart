@@ -20,6 +20,14 @@ class OrderItemWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 5,
+            blurRadius: 7,
+            offset: Offset(0, 3), // changes position of shadow
+          ),
+        ],
       ),
       padding: EdgeInsets.symmetric(
         vertical: 8,
@@ -41,44 +49,36 @@ class OrderItemWidget extends StatelessWidget {
                 fontWeight: FontWeight.normal,
               ),
             ),
-            SizedBox(height: 8.0),
-            RichText(
-              text: TextSpan(
-                text: 'Created By: ',
-                style: TextStyle(
-                  color: Colors.grey,
-                ),
-                children: <TextSpan>[
-                  TextSpan(
-                    text: orderItem.createBy,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black54,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 8.0),
-            RichText(
-              text: TextSpan(
-                text: 'Origin: ',
-                style: TextStyle(
-                  color: Colors.grey,
-                ),
-                children: <TextSpan>[
-                  TextSpan(
-                    text: orderItem.originName,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black54,
-                    ),
-                  ),
-                ],
-              ),
-            )
+            SizedBox(height: 12.0),
+            getRichText('Created By', orderItem.createBy),
+            SizedBox(height: 4.0),
+            getRichText('Origin', orderItem.originName),
+            SizedBox(height: 4.0),
+            getRichText('Destination', orderItem.destinationName),
+            SizedBox(height: 4.0),
+            getRichText('Created At', orderItem.formatDateTime()),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget getRichText(String label, String text) {
+    return RichText(
+      text: TextSpan(
+        text: '$label: ',
+        style: TextStyle(
+          color: Colors.grey,
+        ),
+        children: <TextSpan>[
+          TextSpan(
+            text: text,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.black54,
+            ),
+          ),
+        ],
       ),
     );
   }

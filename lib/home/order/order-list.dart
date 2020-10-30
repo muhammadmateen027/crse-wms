@@ -3,6 +3,8 @@ import 'package:crsewms/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../routes_name.dart';
+
 class OrderList extends StatefulWidget {
   @override
   _OrderListState createState() => _OrderListState();
@@ -23,11 +25,11 @@ class _OrderListState extends State<OrderList> {
         backgroundColor: Color(0xFFffa354).withOpacity(0.8),
         title: Text(
           'Orders',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.black),
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.refresh),
+            icon: Icon(Icons.refresh, color: Colors.black),
             onPressed: () {
               context.bloc<OrderBloc>()..add(FetchOrders());
             },
@@ -35,6 +37,8 @@ class _OrderListState extends State<OrderList> {
         ],
       ),
       body: AppBackgroundContainer(
+        height: double.maxFinite,
+        width: double.maxFinite,
         alignment: Alignment.topCenter,
         child: Container(
           color: Colors.white.withOpacity(0.4),
@@ -68,8 +72,15 @@ class _OrderListState extends State<OrderList> {
                   itemBuilder: (_, index) {
                     return OrderItemWidget(
                       orderItem: state.orders[index],
-                      onTap: () {
-                        print('Hello World');
+                      onTap: () async {
+                        await Navigator.of(context).pushNamed(
+                          RoutesName.detail,
+                          arguments: [
+                            state.orders[index].reqId,
+                            state.orders[index].reqStatus
+                          ],
+                        );
+                        context.bloc<OrderBloc>()..add(FetchOrders());
                       },
                     );
                   },

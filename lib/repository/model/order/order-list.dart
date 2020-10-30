@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class OrderList {
   List<OrderItem> orders;
 
@@ -102,5 +104,15 @@ class OrderItem {
     data['destination_zip'] = this.destinationZip;
     data['destination_state'] = this.destinationState;
     return data;
+  }
+
+  String formatDateTime() {
+    if (this.createdAt?.isEmpty ?? true) {
+      return '';
+    }
+
+    return new DateFormat('yyyy-MM-dd HH:mm').format(
+      DateTime.parse(this.createdAt).toLocal(),
+    );
   }
 }

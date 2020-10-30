@@ -8,3 +8,10 @@ abstract class OrderEvent {
 }
 
 class FetchOrders extends OrderEvent{}
+
+class FetchOrderDetail extends OrderEvent{
+  final Object arguments;
+  const FetchOrderDetail({@required this.arguments});
+  @override
+  List<Object> get props => [arguments];
+}

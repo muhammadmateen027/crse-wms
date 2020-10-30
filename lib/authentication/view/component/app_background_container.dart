@@ -6,6 +6,7 @@ class AppBackgroundContainer extends StatelessWidget {
   EdgeInsetsGeometry padding;
   EdgeInsetsGeometry margin;
   AlignmentGeometry alignment;
+  double height, width;
 
   AppBackgroundContainer({
     Key key,
@@ -13,13 +14,15 @@ class AppBackgroundContainer extends StatelessWidget {
     this.padding = EdgeInsets.zero,
     this.margin = EdgeInsets.zero,
     this.alignment = Alignment.center,
+    this.height,
+    @required this.width,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: double.maxFinite,
-      width: double.maxFinite,
+      height: height,
+      width: height,
       alignment: alignment,
       margin: margin,
       padding: padding,

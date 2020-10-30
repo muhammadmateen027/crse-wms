@@ -27,6 +27,10 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       yield* _fetchOrdersToState(event);
       return;
     }
+    if (event is FetchOrderDetail) {
+      yield* _fetchOrderDetailToState(event);
+      return;
+    }
   }
 
   Stream<OrderState> _fetchOrdersToState(FetchOrders event) async* {
@@ -47,6 +51,29 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     }
 
     yield OrdersFetchedState(orders: orderList.orders);
+    return;
+  }
+
+  Stream<OrderState> _fetchOrderDetailToState(FetchOrderDetail event) async* {
+    yield OrderLoading();
+    Response response;
+    List list = event.arguments;
+    Map map = {
+      'req_id': list[0],
+      'status': list[1],
+    };
+    map.addAll(await _getToken());
+
+    try {
+      response = await userRepositoryInterface.orderDetail(map);
+    } on ApiException catch (error) {
+      yield OrderFailure(error: error.toString());
+      return;
+    }
+
+    OrderDetail orderDetail = OrderDetail.fromJson(response.data);
+
+    yield OrderDetailState(orderDetail: orderDetail);
     return;
   }
 
