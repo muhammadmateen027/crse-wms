@@ -30,6 +30,9 @@ dependencies:
   flutter_dotenv: ^2.1.0
   flutter_secure_storage: ^3.3.4
   intl: ^0.16.1
+  image_picker: ^0.6.7+10
+  path: ^1.7.0
+  path_provider: ^1.6.16
 
 
 

@@ -2,6 +2,7 @@ import 'package:crsewms/repository/model/model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../routes_name.dart';
 import 'bloc/order_bloc.dart';
 
 class OrderDetailPage extends StatefulWidget {
@@ -14,12 +15,18 @@ class OrderDetailPage extends StatefulWidget {
 }
 
 class _OrderDetailPageState extends State<OrderDetailPage> {
+  String floatingActionLabel = 'Confirm Delivery';
+  Color floatingButtonColor = Colors.green;
+  List list = [];
+  OrderDetail orderDetail;
+
   @override
   void initState() {
     context.bloc<OrderBloc>()
       ..add(
         FetchOrderDetail(arguments: widget.arguments),
       );
+    list = widget.arguments;
     super.initState();
   }
 
@@ -35,28 +42,46 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         backgroundColor: Color(0xFFffa354).withOpacity(0.8),
         title: Text('Stock Detail', style: TextStyle(color: Colors.black)),
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: list[1] == 5
+            ? null
+            : () {
+                final result = Navigator.of(context).pushNamed(
+                  RoutesName.deliver,
+                  arguments: widget.arguments,
+                );
+                context.bloc<OrderBloc>()
+                  ..add(
+                    FetchOrderDetail(arguments: widget.arguments),
+                  );
+              },
+        icon: Icon(Icons.local_shipping),
+        label: Text(list[1] == 5 ? 'Delivered' : 'Confirm Delivery'),
+        backgroundColor: list[1] == 5 ? Colors.grey : Colors.green,
+      ),
       body: Container(
         color: Colors.white,
-        child: BlocConsumer<OrderBloc, OrderState>(
-          listener: (_, state) {},
-          builder: (_, state) {
+        child: BlocListener<OrderBloc, OrderState>(
+          listener: (_, state) {
             if (state is OrderDetailState) {
-              return ListView(
-                // mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  getOrderDetail(state.orderDetail),
-                  _getStockList(state.orderDetail.stocks),
-                ],
-              );
+              setState(() {
+                orderDetail = state.orderDetail;
+              });
             }
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFff8b54)),
-                backgroundColor: Colors.white,
-              ),
-            );
           },
+          child: orderDetail != null ?  ListView(
+            // mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              getOrderDetail(orderDetail),
+              _getStockList(orderDetail.stocks),
+            ],
+          ) :  Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFff8b54)),
+              backgroundColor: Colors.white,
+            ),
+          ),
         ),
       ),
     );
@@ -111,7 +136,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                 SizedBox(height: 4.0),
                 _listItemLabelView('Approved Quantity', stocks[index].appQty),
                 SizedBox(height: 4.0),
-                _listItemLabelView('Approved Comment', stocks[index].appComment),
+                _listItemLabelView(
+                    'Approved Comment', stocks[index].appComment),
                 SizedBox(height: 4.0),
                 _listItemLabelView('Date', stocks[index].formatDateTime()),
               ],

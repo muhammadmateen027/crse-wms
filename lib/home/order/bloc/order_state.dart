@@ -25,6 +25,8 @@ class OrdersFetchedState extends OrderState {
 }
 class NoOrderListState extends OrderState {}
 
+class OrderUpdatedState extends OrderState {}
+
 
 class OrderDetailState extends OrderState {
   final OrderDetail orderDetail;

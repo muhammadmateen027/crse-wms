@@ -15,3 +15,11 @@ class FetchOrderDetail extends OrderEvent{
   @override
   List<Object> get props => [arguments];
 }
+
+class UpdateOrderStatus extends OrderEvent{
+  final Object arguments;
+  final File file;
+  const UpdateOrderStatus({@required this.arguments, @required this.file});
+  @override
+  List<Object> get props => [arguments, file];
+}

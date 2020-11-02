@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:crsewms/repository/model/model.dart';
@@ -31,6 +33,9 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       yield* _fetchOrderDetailToState(event);
       return;
     }
+    if (event is UpdateOrderStatus) {
+      yield* _updateOrderStatus(event);
+    }
   }
 
   Stream<OrderState> _fetchOrdersToState(FetchOrders event) async* {
@@ -58,10 +63,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     yield OrderLoading();
     Response response;
     List list = event.arguments;
-    Map map = {
-      'req_id': list[0],
-      'status': list[1],
-    };
+    Map map = {'req_id': list[0]};
     map.addAll(await _getToken());
 
     try {
@@ -74,6 +76,25 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     OrderDetail orderDetail = OrderDetail.fromJson(response.data);
 
     yield OrderDetailState(orderDetail: orderDetail);
+    return;
+  }
+
+  Stream<OrderState> _updateOrderStatus(UpdateOrderStatus event) async* {
+    yield OrderLoading();
+    Response response;
+    List list = event.arguments;
+    String base64Image = base64Encode(event.file.readAsBytesSync());
+    Map map = {'req_id': list[0], 'status': '5', 'image': base64Image};
+    map.addAll(await _getToken());
+
+    try {
+      response = await userRepositoryInterface.orderStatusUpdate(map);
+    } on ApiException catch (error) {
+      yield OrderFailure(error: error.toString());
+      return;
+    }
+
+    yield OrderUpdatedState();
     return;
   }
 

@@ -41,5 +41,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSCameraUsageDescription</key>
+    <string>To take photos of your documents for e-KYC and proofs of pickup/delivery</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>To select existing photos of your documents for e-KYC and proofs of pickup/delivery</string>
 </dict>
 </plist>

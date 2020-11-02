@@ -28,6 +28,12 @@ class RouteGenerator {
           builder: (_) => OrderDetailPage(arguments: args),
         );
         break;
+
+      case RoutesName.deliver:
+        return MaterialPageRoute(
+          builder: (_) => DeliveryConfirmation(arguments: args),
+        );
+        break;
       default:
         return _errorRoute();
     }

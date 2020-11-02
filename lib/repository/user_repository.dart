@@ -70,4 +70,13 @@ class UserRepository implements UserRepositoryInterface {
       data: data,
     );
   }
+
+  @override
+  Future<Response> orderStatusUpdate(Map data) async {
+    return await dataProviderClient.post(
+      '${DotEnv().env['API_URL']}/update',
+      '',
+      data: data,
+    );
+  }
 }
