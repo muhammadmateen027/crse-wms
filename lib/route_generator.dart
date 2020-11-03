@@ -19,7 +19,7 @@ class RouteGenerator {
 
       case RoutesName.home:
         return MaterialPageRoute(
-          builder: (_) => OrderList(),
+          builder: (_) => HomePage(),
         );
         break;
 

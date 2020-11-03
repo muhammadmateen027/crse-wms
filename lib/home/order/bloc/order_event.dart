@@ -7,7 +7,12 @@ abstract class OrderEvent {
   List<Object> get props => [];
 }
 
-class FetchOrders extends OrderEvent{}
+class FetchOrders extends OrderEvent{
+  final bool isOrderDelivered;
+  const FetchOrders({@required this.isOrderDelivered});
+  @override
+  List<Object> get props => [isOrderDelivered];
+}
 
 class FetchOrderDetail extends OrderEvent{
   final Object arguments;

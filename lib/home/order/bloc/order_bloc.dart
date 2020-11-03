@@ -54,8 +54,23 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       yield NoOrderListState();
       return;
     }
+    List<OrderItem> orders = [];
 
-    yield OrdersFetchedState(orders: orderList.orders);
+    for (int index = 0; index < orderList.orders.length; index++) {
+      if (orderList.orders[index].reqStatus == 5 && event.isOrderDelivered) {
+        orders.add(orderList.orders[index]);
+      } else if (orderList.orders[index].reqStatus == 3 &&
+          !event.isOrderDelivered) {
+        orders.add(orderList.orders[index]);
+      }
+    }
+
+    if (orders.length == 0) {
+      yield NoOrderListState();
+      return;
+    }
+
+    yield OrdersFetchedState(orders: orders);
     return;
   }
 
