@@ -17,9 +17,9 @@ class RouteGenerator {
         );
         break;
 
-      case RoutesName.home:
+      case RoutesName.driverHome:
         return MaterialPageRoute(
-          builder: (_) => HomePage(),
+          builder: (_) => DriverHomePage(),
         );
         break;
 

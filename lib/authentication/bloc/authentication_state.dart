@@ -18,6 +18,8 @@ class AuthenticationFailure extends AuthenticationState {
   List<Object> get props => [error];
 }
 
-class AuthenticationAuthenticated extends AuthenticationState {}
+class DriverAuthenticationAuthenticated extends AuthenticationState {}
+
+class SiteManagerAuthenticationAuthenticated extends AuthenticationState {}
 
 class AuthenticationUnAuthenticated extends AuthenticationState {}

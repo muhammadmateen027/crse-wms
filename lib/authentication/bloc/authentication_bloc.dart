@@ -12,15 +12,15 @@ class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   AuthenticationBloc({
     @required this.userRepositoryInterface,
-  })  : assert(userRepositoryInterface != null),
+  })
+      : assert(userRepositoryInterface != null),
         super(AuthenticationInitial());
 
   final UserRepositoryInterface userRepositoryInterface;
 
   @override
   Stream<AuthenticationState> mapEventToState(
-    AuthenticationEvent event,
-  ) async* {
+      AuthenticationEvent event,) async* {
     if (event is FetchUserEvent) {
       yield* _fetchUserInfoEventToState(event);
       return;
@@ -39,9 +39,9 @@ class AuthenticationBloc
       AuthenticationStarted event) async* {
     yield AuthenticationLoading();
     bool hasToken =
-        await userRepositoryInterface.hasToken(DotEnv().env['TOKEN']);
+    await userRepositoryInterface.hasToken(DotEnv().env['TOKEN']);
     if (hasToken) {
-      yield AuthenticationAuthenticated();
+      yield DriverAuthenticationAuthenticated();
       return;
     }
     yield AuthenticationUnAuthenticated();
@@ -67,9 +67,15 @@ class AuthenticationBloc
 
     await userRepositoryInterface.persistToken(
       DotEnv().env['TOKEN'],
-      '${event.email}::${event.password}'
+      '${event.email}::${event.password}',
     );
-    yield AuthenticationAuthenticated();
+
+    if (response.data['user_role'] == 'driver') {
+      yield DriverAuthenticationAuthenticated();
+      return;
+    }
+
+    yield SiteManagerAuthenticationAuthenticated();
     return;
   }
 }

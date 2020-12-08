@@ -1,4 +1,3 @@
-import 'package:crsewms/authentication/view/view.dart';
 import 'package:crsewms/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,11 +21,7 @@ class _OrderListState extends State<OrderList> {
   @override
   Widget build(BuildContext context) {
     context.bloc<OrderBloc>()
-      ..add(FetchOrders(
-        isOrderDelivered: widget.isOrderDelivered,
-      ));
-
-
+      ..add(FetchOrders(isOrderDelivered: widget.isOrderDelivered));
 
     return Scaffold(
       appBar: AppBar(
@@ -112,68 +107,5 @@ class _OrderListState extends State<OrderList> {
         ),
       ),
     );
-// TODO: uncomment if require no appbar
-//     return Container(
-//       color: Colors.white.withOpacity(0.4),
-//       width: double.maxFinite,
-//       height: double.maxFinite,
-//       alignment: Alignment.topCenter,
-//       padding: EdgeInsets.symmetric(horizontal: 16.0),
-//       margin: EdgeInsets.only(top: 32.0),
-//       child: BlocConsumer<OrderBloc, OrderState>(
-//         listener: (_, state) {},
-//         builder: (_, state) {
-//           if (state is NoOrderListState) {
-//             return Container(
-//               alignment: Alignment.center,
-//               child: Text(
-//                 'Order is not available.',
-//                 style: TextStyle(
-//                   fontWeight: FontWeight.w700,
-//                   fontSize: 20,
-//                 ),
-//               ),
-//             );
-//           }
-//           if (state is OrdersFetchedState) {
-//             return ListView.separated(
-//               padding: EdgeInsets.only(top: 8.0, bottom: 16.0),
-//               separatorBuilder: (_, index) => SizedBox(
-//                 height: 8.0,
-//                 child: Divider(),
-//               ),
-//               itemCount: state.orders.length,
-//               itemBuilder: (_, index) {
-//                 return OrderItemWidget(
-//                   orderItem: state.orders[index],
-//                   onTap: () async {
-//                     await Navigator.of(context).pushNamed(
-//                       RoutesName.detail,
-//                       arguments: [
-//                         state.orders[index].reqId,
-//                         state.orders[index].reqStatus
-//                       ],
-//                     );
-//                     context.bloc<OrderBloc>()
-//                       ..add(
-//                         FetchOrders(
-//                           isOrderDelivered: widget.isOrderDelivered,
-//                         ),
-//                       );
-//                   },
-//                 );
-//               },
-//             );
-//           }
-//           return Padding(
-//             padding: const EdgeInsets.all(8.0),
-//             child: CircularProgressIndicator(
-//               valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFff8b54)),
-//               backgroundColor: Colors.white,
-//             ),
-//           );
-//         },
-//       ),
-//     );
   }
 }

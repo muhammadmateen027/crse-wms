@@ -14,12 +14,16 @@ class Splash extends StatelessWidget {
         alignment: Alignment.center,
         child: BlocConsumer<AuthenticationBloc, AuthenticationState>(
           listener: (_, state) {
-            if (state is AuthenticationAuthenticated) {
-              Navigator.of(context).pushReplacementNamed(RoutesName.home);
+            if (state is DriverAuthenticationAuthenticated) {
+              Navigator.of(context).pushReplacementNamed(RoutesName.driverHome);
             }
 
             if (state is AuthenticationUnAuthenticated) {
               Navigator.of(context).pushReplacementNamed(RoutesName.login);
+            }
+
+            if (state is SiteManagerAuthenticationAuthenticated) {
+              Navigator.of(context).pushReplacementNamed(RoutesName.siteManagerHome);
             }
           },
           builder: (_, state) {

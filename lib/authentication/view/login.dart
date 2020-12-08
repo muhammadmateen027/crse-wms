@@ -33,8 +33,12 @@ class _LoginFormState extends State<LoginForm> {
                 );
               return;
             }
-            if (state is AuthenticationAuthenticated) {
-              Navigator.of(context).pushReplacementNamed(RoutesName.home);
+            if (state is DriverAuthenticationAuthenticated) {
+              Navigator.of(context).pushReplacementNamed(RoutesName.driverHome);
+              return;
+            }
+            if (state is SiteManagerAuthenticationAuthenticated) {
+              Navigator.of(context).pushReplacementNamed(RoutesName.siteManagerHome);
               return;
             }
           },
