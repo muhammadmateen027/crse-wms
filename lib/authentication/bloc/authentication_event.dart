@@ -9,6 +9,8 @@ abstract class AuthenticationEvent {
 
 class AuthenticationStarted extends AuthenticationEvent {}
 
+class UnAuthenticate extends AuthenticationEvent {}
+
 class FetchUserEvent extends AuthenticationEvent {}
 
 class FormSubmit extends AuthenticationEvent {

@@ -1,3 +1,4 @@
+import 'package:crsewms/authentication/authentication.dart';
 import 'package:crsewms/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -42,7 +43,8 @@ class _OrderListState extends State<OrderList> {
                   ),
                 );
             },
-          )
+          ),
+          LogoutButton(),
         ],
       ),
       body: Container(
@@ -108,4 +110,24 @@ class _OrderListState extends State<OrderList> {
       ),
     );
   }
+}
+
+class LogoutButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<AuthenticationBloc, AuthenticationState>(
+      listener: (_, state) {
+        if (state is AuthenticationUnAuthenticated) {
+          Navigator.of(context).pushReplacementNamed(RoutesName.login);
+        }
+      },
+      child: IconButton(
+        icon: Icon(Icons.screen_lock_portrait, color: Colors.black),
+        onPressed: () {
+          context.bloc<AuthenticationBloc>()..add(UnAuthenticate());
+        },
+      ),
+    );
+  }
+
 }

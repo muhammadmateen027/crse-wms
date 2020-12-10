@@ -33,6 +33,11 @@ class AuthenticationBloc
       yield* _loginToState(event);
       return;
     }
+
+     if (event is UnAuthenticate) {
+       await userRepositoryInterface.deleteToken();
+       yield AuthenticationUnAuthenticated();
+     }
   }
 
   Stream<AuthenticationState> _authenticationToState(

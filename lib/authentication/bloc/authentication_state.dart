@@ -9,6 +9,8 @@ abstract class AuthenticationState {
 
 class AuthenticationInitial extends AuthenticationState {}
 
+class UnAuthenticated extends AuthenticationState {}
+
 class AuthenticationLoading extends AuthenticationState {}
 
 class AuthenticationFailure extends AuthenticationState {
