@@ -14,15 +14,15 @@ class ApiException implements Exception {
     if (!(null != error.response.data && error.response.data is Map) ){
       return defaultErrorDetail;
     }
-    if (!error.response.data.containsKey('errors')){
+    if (!error.response.data.containsKey('error')){
       return defaultErrorDetail;
     }
-    if (error.response.data['errors'] is! List){
-      return defaultErrorDetail;
+    if (error.response.data['error'] != null){
+      return error.response.data['error'];
     }
 
     List<String> details = [];
-    error.response.data['errors'].forEach((error) => details.add(error['detail']));
+    error.response.data['error'].forEach((error) => details.add(error['detail']));
 
     return details.join('\n\n');
   }

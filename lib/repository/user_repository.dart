@@ -88,4 +88,25 @@ class UserRepository implements UserRepositoryInterface {
       data: data,
     );
   }
+
+  @override
+  Future<Response> boqList(Map data) {
+    // TODO: implement boqList
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Response> deleteMrf(Map data) async {
+    return await dataProviderClient.post(
+      '${DotEnv().env['API_URL']}/mrf-delete',
+      '',
+      data: data,
+    );
+  }
+
+  @override
+  Future<Response> locationList(Map data) {
+    // TODO: implement locationList
+    throw UnimplementedError();
+  }
 }

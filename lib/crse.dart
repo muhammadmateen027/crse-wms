@@ -26,6 +26,9 @@ class MyApp extends StatelessWidget {
             userRepositoryInterface: userRepository,
           )..add(FetchMRFs()),
         ),
+        BlocProvider<MrfCrudBloc>(
+          create: (_) => MrfCrudBloc(userRepositoryInterface: userRepository),
+        ),
       ],
       child: MaterialApp(
         title: 'CRSE-WMS',
