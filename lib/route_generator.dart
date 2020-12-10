@@ -3,6 +3,8 @@ import 'package:crsewms/home/home.dart';
 import 'package:crsewms/routes_name.dart';
 import 'package:flutter/material.dart';
 
+import 'home/view/site_mgr_home.dart';
+
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings setting) {
     final args = setting.arguments;
@@ -16,6 +18,13 @@ class RouteGenerator {
           builder: (_) => LoginForm(),
         );
         break;
+
+      case RoutesName.siteManagerHome:
+        return MaterialPageRoute(
+          builder: (_) => SiteManagerHome(),
+        );
+        break;
+
 
       case RoutesName.driverHome:
         return MaterialPageRoute(

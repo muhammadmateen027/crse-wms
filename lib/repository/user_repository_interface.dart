@@ -11,4 +11,7 @@ abstract class UserRepositoryInterface {
   Future<Response> orderList(Map data);
   Future<Response> orderDetail(Map data);
   Future<Response> orderStatusUpdate(Map data);
+
+
+  Future<Response> loadMrfList(Map data);
 }

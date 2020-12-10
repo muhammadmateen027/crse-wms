@@ -46,7 +46,13 @@ class AuthenticationBloc
     bool hasToken =
     await userRepositoryInterface.hasToken(DotEnv().env['TOKEN']);
     if (hasToken) {
-      yield DriverAuthenticationAuthenticated();
+      String user = await userRepositoryInterface.retrieveToken('USER_ROLE');
+      // if (user == 'driver') {
+      //   yield DriverAuthenticationAuthenticated();
+      //   return;
+      // }
+
+      yield SiteManagerAuthenticationAuthenticated();
       return;
     }
     yield AuthenticationUnAuthenticated();
@@ -74,6 +80,14 @@ class AuthenticationBloc
       DotEnv().env['TOKEN'],
       '${event.email}::${event.password}',
     );
+
+    await userRepositoryInterface.persistToken(
+      'USER_ROLE',
+      response.data['user_role'].toString(),
+    );
+
+    yield SiteManagerAuthenticationAuthenticated();
+    return;
 
     if (response.data['user_role'] == 'driver') {
       yield DriverAuthenticationAuthenticated();

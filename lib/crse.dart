@@ -8,7 +8,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: Colors.black,
+      statusBarColor: Colors.black,
       statusBarBrightness: Brightness.light,
     ));
     return MultiBlocProvider(
@@ -18,11 +18,14 @@ class MyApp extends StatelessWidget {
             userRepositoryInterface: userRepository,
           )..add(AuthenticationStarted()),
         ),
-
         BlocProvider<OrderBloc>(
-          create: (_) => OrderBloc(
+          create: (_) => OrderBloc(userRepositoryInterface: userRepository),
+        ),
+        BlocProvider<MrfListBloc>(
+          create: (_) => MrfListBloc(
             userRepositoryInterface: userRepository,
-          )),
+          )..add(FetchMRFs()),
+        ),
       ],
       child: MaterialApp(
         title: 'CRSE-WMS',

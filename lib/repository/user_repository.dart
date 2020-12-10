@@ -79,4 +79,13 @@ class UserRepository implements UserRepositoryInterface {
       data: data,
     );
   }
+
+  @override
+  Future<Response> loadMrfList(Map data) async {
+    return await dataProviderClient.post(
+      '${DotEnv().env['API_URL']}/mrf',
+      '',
+      data: data,
+    );
+  }
 }
