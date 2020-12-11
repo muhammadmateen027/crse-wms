@@ -6,18 +6,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'components/components.dart';
 
-class CreateMrf extends StatefulWidget {
+class EditMrf extends StatefulWidget {
+  EditMrf({Key key, @required this.argument}) : super(key: key);
+  final Object argument;
+
   @override
-  _CreateMrfState createState() => _CreateMrfState();
+  _EditMrfState createState() => _EditMrfState();
 }
 
-class _CreateMrfState extends State<CreateMrf> {
+class _EditMrfState extends State<EditMrf> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  BOQ boq;
   Location pickupLocation;
   Location dropOffLocation;
-  String commentController;
-
+  String descriptionController;
 
   @override
   Widget build(BuildContext context) {
@@ -33,13 +34,6 @@ class _CreateMrfState extends State<CreateMrf> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 8.0),
-            _getLabel('BOQ'),
-            _getCustomDropDown(
-              boq == null ? 'Select here' : boq.docNum,
-              onTap: () {
-                _boqListPage(context);
-              },
-            ),
             _getLabel('Stock / W.H. Location'),
             _getCustomDropDown(
               pickupLocation == null ? 'Select here' : pickupLocation.name,
@@ -58,7 +52,7 @@ class _CreateMrfState extends State<CreateMrf> {
             TextField(
               onChanged: (value) {
                 setState(() {
-                  commentController = value;
+                  descriptionController = value;
                 });
               },
               decoration: new InputDecoration(
@@ -74,12 +68,12 @@ class _CreateMrfState extends State<CreateMrf> {
               ),
             ),
             SizedBox(height: 16.0),
-            SaveButton(
+            UpdateButton(
               pageContext: context,
               dropOffLocation: dropOffLocation,
-              boq: boq,
+              argument: widget.argument,
               pickupLocation: pickupLocation,
-              description: commentController,
+              description: descriptionController,
               scaffoldKey: _scaffoldKey,
             ),
           ],
@@ -105,22 +99,6 @@ class _CreateMrfState extends State<CreateMrf> {
         } else {
           dropOffLocation = location;
         }
-      });
-    }
-  }
-
-  Future _boqListPage(BuildContext context) async {
-    context.bloc<MrfCrudBloc>()..add(FetchBOQ());
-
-    BOQ boq = await Navigator.of(context).push(
-      MaterialPageRoute<BOQ>(
-        builder: (BuildContext context) => BoqListView(),
-        fullscreenDialog: true,
-      ),
-    );
-    if (boq != null) {
-      setState(() {
-        this.boq = boq;
       });
     }
   }
@@ -164,18 +142,18 @@ class _CreateMrfState extends State<CreateMrf> {
       );
 }
 
-class SaveButton extends StatelessWidget {
-  SaveButton({
+class UpdateButton extends StatelessWidget {
+  UpdateButton({
     Key key,
     @required this.pageContext,
-    @required this.boq,
+    @required this.argument,
     @required this.pickupLocation,
     @required this.dropOffLocation,
     @required this.description,
     @required this.scaffoldKey,
   }) : super(key: key);
   final BuildContext pageContext;
-  final BOQ boq;
+  final Object argument;
   final Location pickupLocation;
   final Location dropOffLocation;
   final String description;
@@ -190,7 +168,7 @@ class SaveButton extends StatelessWidget {
           return;
         }
         if (state is MRFSavedState) {
-          _showToast('MRF Saved successfully', Colors.green);
+          _showToast('MRF update successfully', Colors.green);
           return;
         }
       },
@@ -206,7 +184,7 @@ class SaveButton extends StatelessWidget {
               color: Colors.white,
             ),
             onPressed: () {
-              if (boq == null ||
+              if (argument == null ||
                   pickupLocation == null ||
                   dropOffLocation == null) {
                 _showToast('Missing form details', Colors.red);
@@ -214,8 +192,8 @@ class SaveButton extends StatelessWidget {
               }
 
               context.bloc<MrfCrudBloc>()
-                ..add(SaveMrfEvent(
-                  boq: boq,
+                ..add(UpdateMrfEvent(
+                  reqId: argument.toString(),
                   pickupLocation: pickupLocation,
                   dropOffLocation: dropOffLocation,
                   description: description,
@@ -223,7 +201,7 @@ class SaveButton extends StatelessWidget {
               return;
             },
             label: Text(
-              'Save',
+              'Update',
               style: TextStyle(color: Colors.white),
             ),
           ),

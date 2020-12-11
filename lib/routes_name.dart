@@ -9,4 +9,5 @@ class RoutesName {
 
   static const String createMrf = '/createMrf';
   static const String stockDetail = '/stockDetail';
+  static const String editMrf = '/editMrf';
 }

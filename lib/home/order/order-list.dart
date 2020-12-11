@@ -122,7 +122,7 @@ class LogoutButton extends StatelessWidget {
         }
       },
       child: IconButton(
-        icon: Icon(Icons.screen_lock_portrait, color: Colors.black),
+        icon: Icon(Icons.screen_lock_portrait, color: Colors.black87),
         onPressed: () {
           context.bloc<AuthenticationBloc>()..add(UnAuthenticate());
         },

@@ -53,6 +53,9 @@ class MrfCrudBloc extends Bloc<MrfCrudEvent, MrfCrudState> {
     if (event is DeleteStockEvent) {
       yield* _deleteStockToState(event);
     }
+    if (event is UpdateMrfEvent){
+      yield* _updateMrfToState(event);
+    }
   }
 
   Stream<MrfCrudState> _deleteMrfToState(DeleteMrfEvent event) async* {
@@ -153,6 +156,27 @@ class MrfCrudBloc extends Bloc<MrfCrudEvent, MrfCrudState> {
     data.addAll(await _getToken());
     try {
       response = await userRepositoryInterface.saveMrf(data);
+    } on ApiException catch (error) {
+      yield MrfCrudFailure(error: error.toString());
+      return;
+    }
+
+    yield MRFSavedState();
+    return;
+  }
+
+  Stream<MrfCrudState> _updateMrfToState(UpdateMrfEvent event) async* {
+    yield MrfCrudLoading();
+    Response response;
+    Map data = {
+      'req_id': event.reqId,
+      'stock_location': event.pickupLocation.id,
+      'delivery_location': event.dropOffLocation.id,
+      'description': event.description,
+    };
+    data.addAll(await _getToken());
+    try {
+      response = await userRepositoryInterface.updateMrf(data);
     } on ApiException catch (error) {
       yield MrfCrudFailure(error: error.toString());
       return;

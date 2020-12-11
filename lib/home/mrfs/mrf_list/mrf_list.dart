@@ -107,7 +107,7 @@ class ReloadMrfs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: Icon(Icons.refresh, color: Colors.black),
+      icon: Icon(Icons.refresh, color: Colors.white),
       onPressed: () {
         context.bloc<MrfListBloc>()..add(FetchMRFs());
       },
@@ -143,7 +143,7 @@ class EditMrf extends StatelessWidget {
       icon: Icon(Icons.edit, color: Colors.orange),
       label: Text('Edit', style: TextStyle(color: Colors.orange),),
       onPressed: () {
-        Navigator.of(context).pushNamed(RoutesName.stockDetail, arguments: mrfData.reqId);
+        Navigator.of(context).pushNamed(RoutesName.editMrf, arguments: mrfData.reqId);
       },
     );
   }

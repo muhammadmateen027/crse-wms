@@ -161,4 +161,13 @@ class UserRepository implements UserRepositoryInterface {
     );
   }
 
+  @override
+  Future<Response> updateMrf(Map data) async{
+    return await dataProviderClient.post(
+      '${DotEnv().env['API_URL']}/mrf-update',
+      '',
+      data: data,
+    );
+  }
+
 }

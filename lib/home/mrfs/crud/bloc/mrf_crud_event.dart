@@ -74,3 +74,20 @@ class DeleteStockEvent extends MrfCrudEvent {
   @override
   List<Object> get props => [stockId, reqId];
 }
+
+class UpdateMrfEvent extends MrfCrudEvent {
+  final String reqId;
+  final Location pickupLocation;
+  final Location dropOffLocation;
+  final String description;
+
+  const UpdateMrfEvent({
+    @required this.reqId,
+    @required this.pickupLocation,
+    @required this.dropOffLocation,
+    @required this.description,
+  });
+
+  @override
+  List<Object> get props => [reqId, pickupLocation, dropOffLocation, description];
+}

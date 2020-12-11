@@ -19,6 +19,7 @@ abstract class UserRepositoryInterface {
   Future<Response> locationList(Map data);
 
   Future<Response> saveMrf(Map data);
+  Future<Response> updateMrf(Map data);
 
   Future<Response> mrfStockDetail(Map data);
 

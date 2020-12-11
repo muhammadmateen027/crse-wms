@@ -20,6 +20,9 @@ class ApiException implements Exception {
     if (error.response.data['error'] != null){
       return error.response.data['error'];
     }
+    if (error.response.data['error'] != null){
+      return error.response.data['error'];
+    }
 
     List<String> details = [];
     error.response.data['error'].forEach((error) => details.add(error['detail']));
