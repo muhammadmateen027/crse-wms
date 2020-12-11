@@ -22,7 +22,10 @@ class _CreateMrfState extends State<CreateMrf> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(title: Text('Material request')),
+      appBar: AppBar(
+        title: Text('Material request'),
+        backgroundColor: Colors.orange,
+      ),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
@@ -50,7 +53,7 @@ class _CreateMrfState extends State<CreateMrf> {
                 _locationListViewPage(context, false);
               },
             ),
-            _getLabel('Comments'),
+            _getLabel('Description'),
             TextField(
               controller: commentController,
               decoration: new InputDecoration(
@@ -71,7 +74,7 @@ class _CreateMrfState extends State<CreateMrf> {
               dropOffLocation: dropOffLocation,
               boq: boq,
               pickupLocation: pickupLocation,
-              comment: commentController.text,
+              description: commentController.text,
               scaffoldKey: _scaffoldKey,
             ),
           ],
@@ -163,14 +166,14 @@ class SaveButton extends StatelessWidget {
     @required this.boq,
     @required this.pickupLocation,
     @required this.dropOffLocation,
-    @required this.comment,
+    @required this.description,
     @required this.scaffoldKey,
   }) : super(key: key);
   final BuildContext pageContext;
   final BOQ boq;
   final Location pickupLocation;
   final Location dropOffLocation;
-  final String comment;
+  final String description;
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   @override
@@ -192,7 +195,7 @@ class SaveButton extends StatelessWidget {
         }
         return Center(
           child: RaisedButton.icon(
-            color: Colors.blueAccent,
+            color: Colors.orange,
             icon: Icon(
               Icons.save,
               color: Colors.white,
@@ -205,14 +208,12 @@ class SaveButton extends StatelessWidget {
                 return;
               }
 
-              print(comment);
-
               context.bloc<MrfCrudBloc>()
                 ..add(SaveMrfEvent(
                   boq: boq,
                   pickupLocation: pickupLocation,
                   dropOffLocation: dropOffLocation,
-                  comment: comment,
+                  description: description,
                 ));
               return;
             },

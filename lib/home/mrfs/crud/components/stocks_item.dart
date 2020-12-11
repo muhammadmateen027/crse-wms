@@ -2,11 +2,11 @@ import 'package:crsewms/home/mrfs/crud/crud.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class BoqListView extends StatelessWidget {
+class StocksItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('BOQs'), backgroundColor: Colors.orange,),
+      appBar: AppBar(title: Text('Stock Items'),backgroundColor: Colors.orange,),
       body: BlocBuilder<MrfCrudBloc, MrfCrudState>(
         buildWhen: (prev, curr) => prev != curr,
         builder: (_, state) {
@@ -18,14 +18,14 @@ class BoqListView extends StatelessWidget {
               ),
             );
           }
-          if (state is BoqLoaded) {
+          if (state is StockListLoaded) {
             return ListView.separated(
-              itemCount: state.boqs.length,
+              itemCount: state.stockList.length,
               separatorBuilder: (_, index) => Divider(),
               itemBuilder: (_, index) {
                 return ListTile(
-                  onTap: () => Navigator.of(context).pop(state.boqs[index]),
-                  title: Text(state.boqs[index].docNum),
+                  onTap: () => Navigator.of(context).pop(state.stockList[index]),
+                  title: Text(state.stockList[index].iname),
                 );
               },
             );

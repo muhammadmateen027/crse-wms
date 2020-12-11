@@ -108,7 +108,7 @@ class UserRepository implements UserRepositoryInterface {
   }
 
   @override
-  Future<Response> locationList(Map data) async {
+  Future<Response> locationList(Map data) async{
     return await dataProviderClient.post(
       '${DotEnv().env['API_URL']}/list-location',
       '',
@@ -124,4 +124,41 @@ class UserRepository implements UserRepositoryInterface {
       data: data,
     );
   }
+
+  @override
+  Future<Response> mrfStockDetail(Map data) async{
+    return await dataProviderClient.post(
+      '${DotEnv().env['API_URL']}/mrf-stock',
+      '',
+      data: data,
+    );
+  }
+
+  @override
+  Future<Response> listStock(Map data) async{
+    return await dataProviderClient.post(
+      '${DotEnv().env['API_URL']}/list-stock',
+      '',
+      data: data,
+    );
+  }
+
+  @override
+  Future<Response> saveStockToMrf(Map data) async{
+    return await dataProviderClient.post(
+      '${DotEnv().env['API_URL']}/mrf-stock-create',
+      '',
+      data: data,
+    );
+  }
+
+  @override
+  Future<Response> deleteStockFromMrf(Map data) async{
+    return await dataProviderClient.post(
+      '${DotEnv().env['API_URL']}/mrf-stock-delete',
+      '',
+      data: data,
+    );
+  }
+
 }

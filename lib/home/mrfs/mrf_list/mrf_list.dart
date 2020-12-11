@@ -1,5 +1,6 @@
 import 'package:crsewms/home/mrfs/crud/bloc/mrf_crud_bloc.dart';
 import 'package:crsewms/repository/model/mrfs/mrf_list.dart';
+import 'package:crsewms/routes_name.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -123,8 +124,10 @@ class AddOrViewStock extends StatelessWidget {
   Widget build(BuildContext context) {
     return FlatButton.icon(
       icon: Icon(Icons.remove_red_eye, color: Colors.blueAccent),
-      label: Text('View Stock', style: TextStyle(color: Colors.blueAccent),),
-      onPressed: () {},
+      label: Text('Add Stock', style: TextStyle(color: Colors.blueAccent),),
+      onPressed: () {
+        Navigator.of(context).pushNamed(RoutesName.stockDetail, arguments: mrfData.reqId);
+      },
     );
   }
 }
@@ -139,7 +142,9 @@ class EditMrf extends StatelessWidget {
     return FlatButton.icon(
       icon: Icon(Icons.edit, color: Colors.orange),
       label: Text('Edit', style: TextStyle(color: Colors.orange),),
-      onPressed: () {},
+      onPressed: () {
+        Navigator.of(context).pushNamed(RoutesName.stockDetail, arguments: mrfData.reqId);
+      },
     );
   }
 }

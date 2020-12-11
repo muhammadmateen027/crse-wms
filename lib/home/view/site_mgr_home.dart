@@ -16,6 +16,7 @@ class SiteManagerHome extends StatelessWidget {
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text('MRF List'),
+        backgroundColor: Colors.orange,
         actions: [
           ReloadMrfs(),
           LogoutButton(),
@@ -49,6 +50,7 @@ class SiteManagerHome extends StatelessWidget {
         child: MRFListView(),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.orange,
         onPressed: () {
           Navigator.of(context).pushNamed(RoutesName.createMrf);
         },

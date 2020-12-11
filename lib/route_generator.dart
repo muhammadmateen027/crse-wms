@@ -50,6 +50,13 @@ class RouteGenerator {
           builder: (_) => CreateMrf(),
         );
         break;
+
+      case RoutesName.stockDetail:
+        return MaterialPageRoute(
+          builder: (_) => StockDetailView(argument: args),
+        );
+        break;
+
       default:
         return _errorRoute();
     }

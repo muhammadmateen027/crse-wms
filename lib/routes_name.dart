@@ -8,4 +8,5 @@ class RoutesName {
   static const String deliver = '/deliver';
 
   static const String createMrf = '/createMrf';
+  static const String stockDetail = '/stockDetail';
 }

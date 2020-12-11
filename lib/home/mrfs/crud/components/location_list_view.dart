@@ -8,6 +8,7 @@ class LocationListView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Location'),
+        backgroundColor: Colors.orange,
       ),
       body: BlocBuilder<MrfCrudBloc, MrfCrudState>(
         buildWhen: (prev, curr) => prev != curr,

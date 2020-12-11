@@ -19,6 +19,8 @@ class MrfCrudFailure extends MrfCrudState {
 }
 class MrfDeleteSuccess extends MrfCrudState {}
 
+class StockDeleteSuccess extends MrfCrudState {}
+
 class MRFSavedState extends MrfCrudState {}
 
 class LocationLoaded extends MrfCrudState {
@@ -34,3 +36,18 @@ class BoqLoaded extends MrfCrudState {
   @override
   List<Object> get props => [boqs];
 }
+
+class StockDetailLoadedState extends MrfCrudState {
+  final StockDetail stockDetail;
+  const StockDetailLoadedState({@required this.stockDetail});
+  @override
+  List<Object> get props => [stockDetail];
+}
+class StockListLoaded extends MrfCrudState {
+  final List<StockInfo> stockList;
+  const StockListLoaded({@required this.stockList});
+  @override
+  List<Object> get props => [stockList];
+}
+
+class StockSavedSuccessState extends MrfCrudState {}
