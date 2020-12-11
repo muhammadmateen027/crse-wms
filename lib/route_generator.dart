@@ -3,6 +3,7 @@ import 'package:crsewms/home/home.dart';
 import 'package:crsewms/routes_name.dart';
 import 'package:flutter/material.dart';
 
+import 'home/mrfs/crud/crud.dart';
 import 'home/view/site_mgr_home.dart';
 
 class RouteGenerator {
@@ -41,6 +42,12 @@ class RouteGenerator {
       case RoutesName.deliver:
         return MaterialPageRoute(
           builder: (_) => DeliveryConfirmation(arguments: args),
+        );
+        break;
+
+      case RoutesName.createMrf:
+        return MaterialPageRoute(
+          builder: (_) => CreateMrf(),
         );
         break;
       default:

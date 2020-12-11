@@ -11,6 +11,8 @@ class MrfListInitial extends MrfListState {}
 
 class MrfListLoading extends MrfListState {}
 
+class EmptyMrfListState extends MrfListState {}
+
 class MrfLoadState extends MrfListState {
   final List<MrfData> mrfList;
   const MrfLoadState({@required this.mrfList});

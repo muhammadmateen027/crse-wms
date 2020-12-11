@@ -6,4 +6,6 @@ class RoutesName {
   static const String siteManagerHome = '/siteManagerHome';
   static const String detail = '/detail';
   static const String deliver = '/deliver';
+
+  static const String createMrf = '/createMrf';
 }

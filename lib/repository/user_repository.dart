@@ -90,9 +90,12 @@ class UserRepository implements UserRepositoryInterface {
   }
 
   @override
-  Future<Response> boqList(Map data) {
-    // TODO: implement boqList
-    throw UnimplementedError();
+  Future<Response> boqList(Map data) async {
+    return await dataProviderClient.post(
+      '${DotEnv().env['API_URL']}/list-boq',
+      '',
+      data: data,
+    );
   }
 
   @override
@@ -105,8 +108,20 @@ class UserRepository implements UserRepositoryInterface {
   }
 
   @override
-  Future<Response> locationList(Map data) {
-    // TODO: implement locationList
-    throw UnimplementedError();
+  Future<Response> locationList(Map data) async {
+    return await dataProviderClient.post(
+      '${DotEnv().env['API_URL']}/list-location',
+      '',
+      data: data,
+    );
+  }
+
+  @override
+  Future<Response> saveMrf(Map data) async{
+    return await dataProviderClient.post(
+      '${DotEnv().env['API_URL']}/mrf-create',
+      '',
+      data: data,
+    );
   }
 }

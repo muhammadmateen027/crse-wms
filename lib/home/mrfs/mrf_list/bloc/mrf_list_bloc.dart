@@ -37,6 +37,11 @@ class MrfListBloc extends Bloc<MrfListEvent, MrfListState> {
     }
 
     MRFs mrFs = MRFs.fromJson(response.data);
+    if (mrFs.mrfList.length == 0) {
+      yield EmptyMrfListState();
+      return;
+    }
+
     yield MrfLoadState(mrfList: mrFs.mrfList);
     return;
   }

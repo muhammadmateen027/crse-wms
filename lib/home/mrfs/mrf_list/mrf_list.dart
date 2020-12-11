@@ -17,6 +17,11 @@ class MRFListView extends StatelessWidget {
             child: Text(state.error, style: TextStyle(color: Colors.red)),
           );
         }
+        if (state is EmptyMrfListState) {
+          return Center(
+            child: Text('No Mrf found.'),
+          );
+        }
         if (state is MrfLoadState) {
           return ListView.separated(
             itemCount: state.mrfList.length,

@@ -17,4 +17,6 @@ abstract class UserRepositoryInterface {
   Future<Response> deleteMrf(Map data);
   Future<Response> boqList(Map data);
   Future<Response> locationList(Map data);
+
+  Future<Response> saveMrf(Map data);
 }
