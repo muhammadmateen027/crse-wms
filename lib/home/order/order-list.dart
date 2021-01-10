@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:crsewms/authentication/authentication.dart';
 import 'package:crsewms/home/home.dart';
+import 'package:crsewms/repository/model/model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -19,93 +22,174 @@ class OrderList extends StatefulWidget {
 }
 
 class _OrderListState extends State<OrderList> {
+  final ScrollController _scrollController = ScrollController();
+  List<OrderItem> orders = [];
+  List<OrderItem> listOrders = [];
+
+  @override
+  void initState() {
+    context.bloc<OrderBloc>()
+      ..add(
+        FetchOrders(isOrderDelivered: widget.isOrderDelivered),
+      );
+    super.initState();
+    _scrollController.addListener(() {});
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    context.bloc<OrderBloc>()
-      ..add(FetchOrders(isOrderDelivered: widget.isOrderDelivered));
-
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0.0,
-        backgroundColor: Color(0xFFffa354).withOpacity(0.8),
-        title: Text(
-          widget.label,
-          style: TextStyle(color: Colors.black),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.refresh, color: Colors.black),
-            onPressed: () {
-              context.bloc<OrderBloc>()
-                ..add(
-                  FetchOrders(
-                    isOrderDelivered: widget.isOrderDelivered,
-                  ),
-                );
-            },
+      body: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          _getSearchField(),
+          SliverList(
+            delegate:  SliverChildListDelegate(<Widget>[
+              Container(
+                color: Colors.white.withOpacity(0.4),
+                width: double.maxFinite,
+                height: double.maxFinite,
+                alignment: Alignment.topCenter,
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: BlocConsumer<OrderBloc, OrderState>(
+                  listener: (_, state) {
+                    if (state is OrdersFetchedState) {
+                      if (!state.isSearch) {
+                        setState(() {
+                          this.orders = state.orders;
+                        });
+                        return;
+                      }
+                    }
+                  },
+                  builder: (_, state) {
+                    if (state is NoOrderListState) {
+                      return Container(
+                        alignment: Alignment.center,
+                        height: MediaQuery.of(context).size.height / 2,
+                        width: double.maxFinite,
+                        child: Text(
+                          'Order is not available.',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 20,
+                            color: Colors.black
+                          ),
+                        ),
+                      );
+                    }
+                    if (state is OrdersFetchedState) {
+                      return ListView.separated(
+                        padding: EdgeInsets.only(top: 8.0, bottom: 16.0),
+                        separatorBuilder: (_, index) => Divider(color: Theme.of(context).primaryColor,),
+                        itemCount: state.orders.length,
+                        itemBuilder: (_, index) {
+                          return OrderItemWidget(
+                            orderItem: state.orders[index],
+                            onTap: () async {
+                              await Navigator.of(context).pushNamed(
+                                RoutesName.detail,
+                                arguments: [
+                                  state.orders[index].reqId,
+                                  state.orders[index].reqStatus
+                                ],
+                              );
+                              context.bloc<OrderBloc>()
+                                ..add(
+                                  FetchOrders(
+                                    isOrderDelivered: widget.isOrderDelivered,
+                                  ),
+                                );
+                            },
+                          );
+                        },
+                      );
+                    }
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFff8b54)),
+                        backgroundColor: Colors.white,
+                      ),
+                    );
+                  },
+                ),
+              )
+            ]),
           ),
-          LogoutButton(),
         ],
       ),
-      body: Container(
-        color: Colors.white.withOpacity(0.4),
-        width: double.maxFinite,
-        height: double.maxFinite,
-        alignment: Alignment.topCenter,
-        padding: EdgeInsets.symmetric(horizontal: 16.0),
-        child: BlocConsumer<OrderBloc, OrderState>(
-          listener: (_, state) {},
-          builder: (_, state) {
-            if (state is NoOrderListState) {
-              return Container(
-                alignment: Alignment.center,
-                child: Text(
-                  'Order is not available.',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 20,
-                  ),
+    );
+  }
+
+
+  Widget _getSearchField() {
+    return SliverAppBar(
+      floating: true,
+      pinned: true,
+      snap: false,
+      stretch: true,
+      centerTitle: Platform.isIOS,
+      expandedHeight: 100,
+      title: Text('Available hubs'),
+      backgroundColor: Theme
+          .of(context)
+          .primaryColor,
+      actions: [
+        IconButton(
+          icon: Icon(Icons.refresh, color: Colors.black),
+          onPressed: () {
+            context.bloc<OrderBloc>()
+              ..add(
+                FetchOrders(
+                  isOrderDelivered: widget.isOrderDelivered,
                 ),
               );
-            }
-            if (state is OrdersFetchedState) {
-              return ListView.separated(
-                padding: EdgeInsets.only(top: 8.0, bottom: 16.0),
-                separatorBuilder: (_, index) => SizedBox(
-                  height: 8.0,
-                  child: Divider(),
-                ),
-                itemCount: state.orders.length,
-                itemBuilder: (_, index) {
-                  return OrderItemWidget(
-                    orderItem: state.orders[index],
-                    onTap: () async {
-                      await Navigator.of(context).pushNamed(
-                        RoutesName.detail,
-                        arguments: [
-                          state.orders[index].reqId,
-                          state.orders[index].reqStatus
-                        ],
-                      );
-                      context.bloc<OrderBloc>()
-                        ..add(
-                          FetchOrders(
-                            isOrderDelivered: widget.isOrderDelivered,
-                          ),
-                        );
-                    },
-                  );
-                },
-              );
-            }
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFff8b54)),
-                backgroundColor: Colors.white,
-              ),
-            );
           },
+        ),
+        LogoutButton(),
+      ],
+      flexibleSpace: FlexibleSpaceBar(
+        stretchModes: <StretchMode>[
+          StretchMode.zoomBackground,
+          StretchMode.blurBackground,
+          StretchMode.fadeTitle,
+        ],
+        background: Container(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(0)),
+                color: Colors.white,
+                border: Border.all(color: Colors.white),
+            ),
+            padding: EdgeInsets.only(left: 8.0),
+            child: TextFormField(
+              autofocus: true,
+              keyboardType: TextInputType.text,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .headline6,
+              decoration: InputDecoration(
+                hintStyle: Theme
+                    .of(context)
+                    .textTheme
+                    .caption,
+                border: InputBorder.none,
+                hintText: 'Search here...',
+                suffixIcon: Icon(Icons.search),
+              ),
+              autovalidate: true,
+              onChanged: (query) {
+                context.bloc<OrderBloc>()
+                  ..add(
+                    SearchOrderEvent(orders: orders, query: query),
+                  );
+              },
+            ),
+          ),
         ),
       ),
     );
@@ -129,5 +213,4 @@ class LogoutButton extends StatelessWidget {
       ),
     );
   }
-
 }

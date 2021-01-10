@@ -36,6 +36,10 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     if (event is UpdateOrderStatus) {
       yield* _updateOrderStatus(event);
     }
+
+    if (event is SearchOrderEvent) {
+      yield* _searchOrderToState(event);
+    }
   }
 
   Stream<OrderState> _fetchOrdersToState(FetchOrders event) async* {
@@ -70,7 +74,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       return;
     }
 
-    yield OrdersFetchedState(orders: orders);
+    yield OrdersFetchedState(orders: orders, isSearch: false);
     return;
   }
 
@@ -110,6 +114,41 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     }
 
     yield OrderUpdatedState();
+    return;
+  }
+
+  Stream<OrderState> _searchOrderToState(SearchOrderEvent event) async* {
+
+    List<OrderItem> orders = [];
+
+    if (event.orders.length == 0) {
+      yield NoOrderListState();
+      return;
+    }
+
+    for(int index=0; index < event.orders.length; index++) {
+      if (event.orders[index].destinationAddress.contains(event.query) ||
+          event.orders[index].destinationName.contains(event.query) ||
+          event.orders[index].originAddress.contains(event.query) ||
+          event.orders[index].project.contains(event.query) ||
+          event.orders[index].desc.contains(event.query) ||
+          event.orders[index].originState.contains(event.query) ||
+          event.orders[index].destinationState.contains(event.query) ||
+          event.orders[index].originName.contains(event.query) ||
+          event.orders[index].document.contains(event.query) ||
+          event.orders[index].originZip.contains(event.query) ||
+          event.orders[index].destinationZip.contains(event.query)
+      ) {
+        orders.add(event.orders[index]);
+      }
+    }
+
+    if (orders.length == 0) {
+      yield NoOrderListState();
+      return;
+    }
+
+    yield OrdersFetchedState(orders: orders, isSearch: true);
     return;
   }
 

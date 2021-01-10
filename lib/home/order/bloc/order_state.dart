@@ -19,10 +19,12 @@ class OrderFailure extends OrderState {
 
 class OrdersFetchedState extends OrderState {
   final List<OrderItem> orders;
-  const OrdersFetchedState({@required this.orders});
+  final bool isSearch;
+  const OrdersFetchedState({@required this.orders,@required this.isSearch});
   @override
-  List<Object> get props => [orders];
+  List<Object> get props => [orders, isSearch];
 }
+
 class NoOrderListState extends OrderState {}
 
 class OrderUpdatedState extends OrderState {}

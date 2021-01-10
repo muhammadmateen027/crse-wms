@@ -28,3 +28,11 @@ class UpdateOrderStatus extends OrderEvent{
   @override
   List<Object> get props => [arguments, file];
 }
+
+class SearchOrderEvent extends OrderEvent{
+  final String query;
+  final List<OrderItem> orders;
+  const SearchOrderEvent({@required this.query, @required this.orders});
+  @override
+  List<Object> get props => [query, orders];
+}

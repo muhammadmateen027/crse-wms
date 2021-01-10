@@ -13,14 +13,11 @@ class OrderItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: BoxConstraints(
-        minWidth: double.maxFinite,
-      ),
+      constraints: BoxConstraints(minWidth: double.maxFinite),
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8.0),
-        border: Border.all(color: Color(0xFFff8b54)),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
