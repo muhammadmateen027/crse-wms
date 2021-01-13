@@ -29,6 +29,8 @@ class UpdateOrderStatus extends OrderEvent{
   List<Object> get props => [arguments, file];
 }
 
+class ScanOrder extends OrderEvent {}
+
 class SearchOrderEvent extends OrderEvent{
   final String query;
   final List<OrderItem> orders;

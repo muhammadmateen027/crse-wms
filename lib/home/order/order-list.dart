@@ -36,16 +36,21 @@ class _OrderListState extends State<OrderList> {
     _scrollController.addListener(() {});
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          context.bloc<OrderBloc>()..add(ScanOrder());
+        },
+        child: Icon(Icons.center_focus_weak),
+      ),
       body: CustomScrollView(
         controller: _scrollController,
         slivers: [
           _getSearchField(),
           SliverList(
-            delegate:  SliverChildListDelegate(<Widget>[
+            delegate: SliverChildListDelegate(<Widget>[
               Container(
                 color: Colors.white.withOpacity(0.4),
                 width: double.maxFinite,
@@ -62,6 +67,10 @@ class _OrderListState extends State<OrderList> {
                         return;
                       }
                     }
+
+                    if (state is ScannedFetchedState) {
+                      _pushToDetailPage(state.reqId, state.reqStatus);
+                    }
                   },
                   builder: (_, state) {
                     if (state is NoOrderListState) {
@@ -72,35 +81,27 @@ class _OrderListState extends State<OrderList> {
                         child: Text(
                           'Order is not available.',
                           style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 20,
-                            color: Colors.black
-                          ),
+                              fontWeight: FontWeight.w700,
+                              fontSize: 20,
+                              color: Colors.black),
                         ),
                       );
                     }
                     if (state is OrdersFetchedState) {
                       return ListView.separated(
                         padding: EdgeInsets.only(top: 8.0, bottom: 16.0),
-                        separatorBuilder: (_, index) => Divider(color: Theme.of(context).primaryColor,),
+                        separatorBuilder: (_, index) => Divider(
+                          color: Theme.of(context).primaryColor,
+                        ),
                         itemCount: state.orders.length,
                         itemBuilder: (_, index) {
                           return OrderItemWidget(
                             orderItem: state.orders[index],
                             onTap: () async {
-                              await Navigator.of(context).pushNamed(
-                                RoutesName.detail,
-                                arguments: [
-                                  state.orders[index].reqId,
-                                  state.orders[index].reqStatus
-                                ],
+                              _pushToDetailPage(
+                                state.orders[index].reqId,
+                                state.orders[index].reqStatus,
                               );
-                              context.bloc<OrderBloc>()
-                                ..add(
-                                  FetchOrders(
-                                    isOrderDelivered: widget.isOrderDelivered,
-                                  ),
-                                );
                             },
                           );
                         },
@@ -109,7 +110,8 @@ class _OrderListState extends State<OrderList> {
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFff8b54)),
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(Color(0xFFff8b54)),
                         backgroundColor: Colors.white,
                       ),
                     );
@@ -123,6 +125,18 @@ class _OrderListState extends State<OrderList> {
     );
   }
 
+  void _pushToDetailPage(int reqId, int reqStatus) async {
+    await Navigator.of(context).pushNamed(
+      RoutesName.detail,
+      arguments: [reqId, reqStatus],
+    );
+    context.bloc<OrderBloc>()
+      ..add(
+        FetchOrders(
+          isOrderDelivered: widget.isOrderDelivered,
+        ),
+      );
+  }
 
   Widget _getSearchField() {
     return SliverAppBar(
@@ -133,9 +147,7 @@ class _OrderListState extends State<OrderList> {
       centerTitle: Platform.isIOS,
       expandedHeight: 100,
       title: Text('Available hubs'),
-      backgroundColor: Theme
-          .of(context)
-          .primaryColor,
+      backgroundColor: Theme.of(context).primaryColor,
       actions: [
         IconButton(
           icon: Icon(Icons.refresh, color: Colors.black),
@@ -160,23 +172,17 @@ class _OrderListState extends State<OrderList> {
           alignment: Alignment.bottomCenter,
           child: Container(
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(0)),
-                color: Colors.white,
-                border: Border.all(color: Colors.white),
+              borderRadius: BorderRadius.all(Radius.circular(0)),
+              color: Colors.white,
+              border: Border.all(color: Colors.white),
             ),
             padding: EdgeInsets.only(left: 8.0),
             child: TextFormField(
               autofocus: true,
               keyboardType: TextInputType.text,
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .headline6,
+              style: Theme.of(context).textTheme.headline6,
               decoration: InputDecoration(
-                hintStyle: Theme
-                    .of(context)
-                    .textTheme
-                    .caption,
+                hintStyle: Theme.of(context).textTheme.caption,
                 border: InputBorder.none,
                 hintText: 'Search here...',
                 suffixIcon: Icon(Icons.search),

@@ -170,4 +170,13 @@ class UserRepository implements UserRepositoryInterface {
     );
   }
 
+  @override
+  Future<Response> scanOrder(Map data) async {
+    return await dataProviderClient.post(
+      '${DotEnv().env['API_URL']}/job-scan',
+      '',
+      data: data,
+    );
+  }
+
 }

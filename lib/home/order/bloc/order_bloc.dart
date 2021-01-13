@@ -2,10 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:barcode_scan/barcode_scan.dart';
 import 'package:bloc/bloc.dart';
 import 'package:crsewms/repository/model/model.dart';
 import 'package:crsewms/repository/repository.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:meta/meta.dart';
 
@@ -40,6 +42,39 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     if (event is SearchOrderEvent) {
       yield* _searchOrderToState(event);
     }
+
+    if (event is ScanOrder) {
+      yield* _scanOrdersToState(event);
+    }
+  }
+
+  Stream<OrderState> _scanOrdersToState(ScanOrder event) async* {
+    String error = '';
+    try {
+      ScanResult result = await BarcodeScanner.scan();
+      if (result.rawContent?.isNotEmpty ?? false) {
+        yield OrderLoading();
+
+        Map map = {'mrf_id': result.rawContent};
+        map.addAll(await _getToken());
+
+        Response response = await userRepositoryInterface.scanOrder(map);
+
+        OrderDetail orderDetail = OrderDetail.fromJson(response.data);
+
+        yield ScannedFetchedState(reqId: orderDetail.reqId, reqStatus: orderDetail.reqStatus,);
+      }
+      return;
+    } on PlatformException catch (e) {
+      error = e.message;
+    } on FormatException catch (e) {
+      error = e.toString();
+    } on ApiException catch (e) {
+      error = e.toString();
+    }
+
+    yield OrderFailure(error: error.toString());
+    return;
   }
 
   Stream<OrderState> _fetchOrdersToState(FetchOrders event) async* {

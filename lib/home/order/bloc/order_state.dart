@@ -25,6 +25,14 @@ class OrdersFetchedState extends OrderState {
   List<Object> get props => [orders, isSearch];
 }
 
+class ScannedFetchedState extends OrderState {
+  final int reqId;
+  final int reqStatus;
+  const ScannedFetchedState({@required this.reqId, @required this.reqStatus});
+  @override
+  List<Object> get props => [reqId, reqStatus];
+}
+
 class NoOrderListState extends OrderState {}
 
 class OrderUpdatedState extends OrderState {}
