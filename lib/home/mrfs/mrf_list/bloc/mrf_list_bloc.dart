@@ -24,35 +24,62 @@ class MrfListBloc extends Bloc<MrfListEvent, MrfListState> {
     if (event is FetchMRFs) {
       yield* _getMrfListToState(event);
     }
+
+    if (event is SearchMRFEvent) {
+      yield* _searchMrfListToState(event);
+    }
   }
 
-  Stream<MrfListState> _getMrfListToState(FetchMRFs event) async*{
-    yield MrfListLoading();
-    Response response;
-    try {
-      response = await userRepositoryInterface.loadMrfList(await _getToken());
-    } on ApiException catch (error) {
-    yield MrfListFailure(error: error.toString());
-    return;
-    }
+  Stream<MrfListState> _searchMrfListToState(SearchMRFEvent event) async* {
+    yield MrfLoadState(mrfList: []);
 
-    MRFs mrFs = MRFs.fromJson(response.data);
-    if (mrFs.mrfList.length == 0) {
-      yield EmptyMrfListState();
+    try {
+      Map map = {'search': event.query};
+      map.addAll(await _getToken());
+
+      Response response = await userRepositoryInterface.loadMrfList(map);
+
+      MRFs mrFs = MRFs.fromJson(response.data);
+      if (mrFs.mrfList.length == 0) {
+        yield EmptyMrfListState();
+        return;
+      }
+
+      yield MrfLoadState(mrfList: mrFs.mrfList);
+      return;
+    } on ApiException catch (error) {
+      yield MrfListFailure(error: error.toString());
       return;
     }
+  }
 
-    yield MrfLoadState(mrfList: mrFs.mrfList);
-    return;
+  Stream<MrfListState> _getMrfListToState(FetchMRFs event) async* {
+    yield MrfListLoading();
+
+    try {
+      Response response =
+          await userRepositoryInterface.loadMrfList(await _getToken());
+
+      MRFs mrFs = MRFs.fromJson(response.data);
+      if (mrFs.mrfList.length == 0) {
+        yield EmptyMrfListState();
+        return;
+      }
+
+      yield MrfLoadState(mrfList: mrFs.mrfList);
+      return;
+    } on ApiException catch (error) {
+      yield MrfListFailure(error: error.toString());
+      return;
+    }
   }
 
   Future<Map> _getToken() async {
     Map map = new Map();
     String user =
-    await userRepositoryInterface.retrieveToken(DotEnv().env['TOKEN']);
+        await userRepositoryInterface.retrieveToken(DotEnv().env['TOKEN']);
     map = {'email': user.split('::')[0], 'password': user.split('::')[1]};
 
     return map;
   }
-
 }

@@ -146,7 +146,7 @@ class _OrderListState extends State<OrderList> {
       stretch: true,
       centerTitle: Platform.isIOS,
       expandedHeight: 100,
-      title: Text('Available hubs'),
+      title: Text('Orders'),
       backgroundColor: Theme.of(context).primaryColor,
       actions: [
         IconButton(

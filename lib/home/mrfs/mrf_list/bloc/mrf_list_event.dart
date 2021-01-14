@@ -8,3 +8,11 @@ abstract class MrfListEvent {
 }
 
 class FetchMRFs extends MrfListEvent{}
+
+class SearchMRFEvent extends MrfListEvent{
+  final String query;
+
+  const SearchMRFEvent({@required this.query});
+  @override
+  List<Object> get props => [ query];
+}

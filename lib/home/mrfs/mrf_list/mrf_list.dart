@@ -19,12 +19,12 @@ class MRFListView extends StatelessWidget {
           );
         }
         if (state is EmptyMrfListState) {
-          return Center(
-            child: Text('No Mrf found.'),
-          );
+          return Center(child: Text('No Mrf found.'));
         }
         if (state is MrfLoadState) {
           return ListView.separated(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
             itemCount: state.mrfList.length,
             separatorBuilder: (_, index) => Divider(),
             itemBuilder: (_, index) {
@@ -73,9 +73,19 @@ class MRFListView extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              AddOrViewStock(mrfData: mrfData,),
-              mrfData.reqStatus == 0 ? EditMrf(mrfData: mrfData,) : SizedBox(),
-              mrfData.reqStatus == 0 ? DeleteMrf(mrfData: mrfData,) : SizedBox(),
+              AddOrViewStock(
+                mrfData: mrfData,
+              ),
+              mrfData.reqStatus == 0
+                  ? EditMrf(
+                      mrfData: mrfData,
+                    )
+                  : SizedBox(),
+              mrfData.reqStatus == 0
+                  ? DeleteMrf(
+                      mrfData: mrfData,
+                    )
+                  : SizedBox(),
             ],
           )
         ],
@@ -124,9 +134,13 @@ class AddOrViewStock extends StatelessWidget {
   Widget build(BuildContext context) {
     return FlatButton.icon(
       icon: Icon(Icons.remove_red_eye, color: Colors.blueAccent),
-      label: Text('Add Stock', style: TextStyle(color: Colors.blueAccent),),
+      label: Text(
+        'Add Stock',
+        style: TextStyle(color: Colors.blueAccent),
+      ),
       onPressed: () {
-        Navigator.of(context).pushNamed(RoutesName.stockDetail, arguments: mrfData.reqId);
+        Navigator.of(context)
+            .pushNamed(RoutesName.stockDetail, arguments: mrfData.reqId);
       },
     );
   }
@@ -141,9 +155,13 @@ class EditMrf extends StatelessWidget {
   Widget build(BuildContext context) {
     return FlatButton.icon(
       icon: Icon(Icons.edit, color: Colors.orange),
-      label: Text('Edit', style: TextStyle(color: Colors.orange),),
+      label: Text(
+        'Edit',
+        style: TextStyle(color: Colors.orange),
+      ),
       onPressed: () {
-        Navigator.of(context).pushNamed(RoutesName.editMrf, arguments: mrfData.reqId);
+        Navigator.of(context)
+            .pushNamed(RoutesName.editMrf, arguments: mrfData.reqId);
       },
     );
   }
@@ -164,9 +182,13 @@ class DeleteMrf extends StatelessWidget {
       },
       child: FlatButton.icon(
         icon: Icon(Icons.delete, color: Colors.red),
-        label: Text('Delete', style: TextStyle(color: Colors.red),),
+        label: Text(
+          'Delete',
+          style: TextStyle(color: Colors.red),
+        ),
         onPressed: () {
-          context.bloc<MrfCrudBloc>()..add(DeleteMrfEvent(mrfId: mrfData.reqId));
+          context.bloc<MrfCrudBloc>()
+            ..add(DeleteMrfEvent(mrfId: mrfData.reqId));
         },
       ),
     );
