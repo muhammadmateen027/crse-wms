@@ -179,4 +179,13 @@ class UserRepository implements UserRepositoryInterface {
     );
   }
 
+  @override
+  Future<Response> mrfScan(Map data) async {
+    return await dataProviderClient.post(
+      '${DotEnv().env['API_URL']}/mrf-scan',
+      '',
+      data: data,
+    );
+  }
+
 }

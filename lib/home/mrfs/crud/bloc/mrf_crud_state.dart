@@ -19,6 +19,13 @@ class MrfCrudFailure extends MrfCrudState {
 }
 class MrfDeleteSuccess extends MrfCrudState {}
 
+class ScannedSuccessState extends MrfCrudState {
+  final int reqId;
+  const ScannedSuccessState({@required this.reqId});
+  @override
+  List<Object> get props => [reqId];
+}
+
 class StockDeleteSuccess extends MrfCrudState {}
 
 class MRFSavedState extends MrfCrudState {}

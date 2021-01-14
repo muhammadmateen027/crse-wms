@@ -48,6 +48,8 @@ class GetStockDetailEvent extends MrfCrudEvent {
   List<Object> get props => [id];
 }
 
+class ScanMrfEvent extends MrfCrudEvent {}
+
 class AddStockToMrf extends MrfCrudEvent {
   final String id;
   final String stockId;

@@ -1,13 +1,16 @@
 import 'dart:async';
 
+import 'package:barcode_scan/barcode_scan.dart';
 import 'package:bloc/bloc.dart';
 import 'package:crsewms/repository/model/mrfs/boq_list.dart';
 import 'package:crsewms/repository/model/mrfs/location_list.dart';
 import 'package:crsewms/repository/model/mrfs/stock_detail.dart';
 import 'package:crsewms/repository/model/mrfs/stocks.dart';
+import 'package:crsewms/repository/model/order/order-detail.dart';
 import 'package:crsewms/repository/repository.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:meta/meta.dart';
 
@@ -56,6 +59,37 @@ class MrfCrudBloc extends Bloc<MrfCrudEvent, MrfCrudState> {
     if (event is UpdateMrfEvent){
       yield* _updateMrfToState(event);
     }
+
+    if (event is ScanMrfEvent) {
+      yield* _scanOrdersToState(event);
+    }
+  }
+
+  Stream<MrfCrudState> _scanOrdersToState(ScanMrfEvent event) async* {
+    String error = '';
+    try {
+      ScanResult result = await BarcodeScanner.scan();
+      if (result.rawContent?.isNotEmpty ?? false) {
+        Map map = {'mrf_id': result.rawContent};
+        map.addAll(await _getToken());
+
+        Response response = await userRepositoryInterface.mrfScan(map);
+
+        OrderDetail orderDetail = OrderDetail.fromJson(response.data);
+
+        yield ScannedSuccessState(reqId: orderDetail.reqId);
+      }
+      return;
+    } on PlatformException catch (e) {
+      error = e.message;
+    } on FormatException catch (e) {
+      error = e.toString();
+    } on ApiException catch (e) {
+      error = e.toString();
+    }
+
+    yield MrfCrudFailure(error: error.toString());
+    return;
   }
 
   Stream<MrfCrudState> _deleteMrfToState(DeleteMrfEvent event) async* {
