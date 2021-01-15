@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
         BlocProvider<MrfListBloc>(
           create: (_) => MrfListBloc(
             userRepositoryInterface: userRepository,
-          )..add(FetchMRFs()),
+          )..add(FetchMRFs(isApprovedMrf: false)),
         ),
         BlocProvider<MrfCrudBloc>(
           create: (_) => MrfCrudBloc(userRepositoryInterface: userRepository),

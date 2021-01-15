@@ -7,7 +7,13 @@ abstract class MrfListEvent {
   List<Object> get props => [];
 }
 
-class FetchMRFs extends MrfListEvent{}
+class FetchMRFs extends MrfListEvent{
+  final bool isApprovedMrf;
+
+  const FetchMRFs({@required this.isApprovedMrf});
+  @override
+  List<Object> get props => [ isApprovedMrf];
+}
 
 class SearchMRFEvent extends MrfListEvent{
   final String query;

@@ -16,16 +16,21 @@ class SiteManagerHome extends StatefulWidget {
   _SiteManagerHomeState createState() => _SiteManagerHomeState();
 }
 
-class _SiteManagerHomeState extends State<SiteManagerHome> {
+class _SiteManagerHomeState extends State<SiteManagerHome>
+    with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   List<MrfData> mrfList = [];
   final ScrollController _scrollController = ScrollController();
+  TabController controller;
+  bool isApprovedMrf = false;
 
   @override
   void initState() {
     _scrollController.addListener(() {});
     super.initState();
+    controller = TabController(length: 2, vsync: this);
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,9 +70,7 @@ class _SiteManagerHomeState extends State<SiteManagerHome> {
               }
             },
             child: SliverList(
-              delegate: SliverChildListDelegate(<Widget>[
-                MRFListView()
-              ]),
+              delegate: SliverChildListDelegate(<Widget>[MRFListView()]),
             ),
           ),
         ],
@@ -89,7 +92,7 @@ class _SiteManagerHomeState extends State<SiteManagerHome> {
       snap: false,
       stretch: true,
       centerTitle: Platform.isIOS,
-      expandedHeight: 100,
+      expandedHeight: 160,
       title: Text('MRF List'),
       backgroundColor: Theme.of(context).primaryColor,
       actions: [
@@ -104,34 +107,57 @@ class _SiteManagerHomeState extends State<SiteManagerHome> {
         ],
         background: Container(
           alignment: Alignment.bottomCenter,
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(0)),
-              color: Colors.white,
-              border: Border.all(color: Colors.white),
-            ),
-            padding: EdgeInsets.only(left: 8.0),
-            child: TextFormField(
-              autofocus: true,
-              keyboardType: TextInputType.text,
-              style: Theme.of(context).textTheme.headline6,
-              decoration: InputDecoration(
-                hintStyle: Theme.of(context).textTheme.caption,
-                border: InputBorder.none,
-                hintText: 'Search here...',
-                prefixIcon: Icon(Icons.search),
-                suffixIcon: IconButton(
-                  icon: Icon(Icons.center_focus_weak),
-                  onPressed: (){
-                    context.bloc<MrfCrudBloc>()..add(ScanMrfEvent());
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              SizedBox(
+                height: 60,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(0)),
+                  color: Colors.white,
+                  border: Border.all(color: Colors.white),
+                ),
+                padding: EdgeInsets.only(left: 8.0),
+                child: TextFormField(
+                  autofocus: true,
+                  keyboardType: TextInputType.text,
+                  style: Theme.of(context).textTheme.headline6,
+                  decoration: InputDecoration(
+                    hintStyle: Theme.of(context).textTheme.caption,
+                    border: InputBorder.none,
+                    hintText: 'Search here...',
+                    prefixIcon: Icon(Icons.search),
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.center_focus_weak),
+                      onPressed: () {
+                        context.bloc<MrfCrudBloc>()..add(ScanMrfEvent());
+                      },
+                    ),
+                  ),
+                  autovalidate: true,
+                  onChanged: (query) {
+                    context.bloc<MrfListBloc>()
+                      ..add(SearchMRFEvent(query: query));
                   },
                 ),
               ),
-              autovalidate: true,
-              onChanged: (query) {
-                context.bloc<MrfListBloc>()..add(SearchMRFEvent(query: query));
-              },
-            ),
+              TabBar(
+                tabs: [Tab(text: 'Pending', ), Tab(text: 'Approved')],
+                controller: controller,
+                onTap: (index) {
+                  if (index == 0) {
+                    setState(() => isApprovedMrf = false);
+                    context.bloc<MrfListBloc>()..add(FetchMRFs(isApprovedMrf: false));
+                    return;
+                  }
+                  context.bloc<MrfListBloc>()..add(FetchMRFs(isApprovedMrf: true));
+                  setState(() => isApprovedMrf = true);
+                },
+              )
+            ],
           ),
         ),
       ),

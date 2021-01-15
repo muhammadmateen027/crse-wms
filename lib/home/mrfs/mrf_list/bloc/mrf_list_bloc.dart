@@ -66,12 +66,33 @@ class MrfListBloc extends Bloc<MrfListEvent, MrfListState> {
         return;
       }
 
-      yield MrfLoadState(mrfList: mrFs.mrfList);
+      yield MrfLoadState(
+        mrfList: _getSpecificMrfList(event.isApprovedMrf, mrFs.mrfList),
+      );
       return;
     } on ApiException catch (error) {
       yield MrfListFailure(error: error.toString());
       return;
     }
+  }
+
+  List<MrfData> _getSpecificMrfList(bool isApprovedMrf, List<MrfData> mrfList) {
+    List<MrfData> list = [];
+    if (!isApprovedMrf) {
+      for (int index = 0; index < mrfList.length; index++) {
+        if (mrfList[index].reqStatus == 0) {
+          list.add(mrfList[index]);
+        }
+      }
+    }
+
+    for (int index = 0; index < mrfList.length; index++) {
+      if (mrfList[index].reqStatus == 3) {
+        list.add(mrfList[index]);
+      }
+    }
+
+    return list;
   }
 
   Future<Map> _getToken() async {
