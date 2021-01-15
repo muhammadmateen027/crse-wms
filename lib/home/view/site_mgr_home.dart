@@ -72,6 +72,7 @@ class _SiteManagerHomeState extends State<SiteManagerHome>
             child: SliverList(
               delegate: SliverChildListDelegate(<Widget>[
                 MRFListView(isApprovedMrf: isApprovedMrf),
+                SizedBox(height: 100),
               ]),
             ),
           ),
@@ -95,7 +96,7 @@ class _SiteManagerHomeState extends State<SiteManagerHome>
       stretch: true,
       centerTitle: Platform.isIOS,
       expandedHeight: 160,
-      title: Text('MRF List'),
+      title: Text('MRF list'),
       backgroundColor: Theme.of(context).primaryColor,
       actions: [
         ReloadMrfs(isApprovedMrf: isApprovedMrf),

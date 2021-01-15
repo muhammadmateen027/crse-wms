@@ -26,15 +26,13 @@ class MRFListView extends StatelessWidget {
           return Center(child: Text('No Mrf found.'));
         }
         if (state is MrfLoadState) {
-          return ListView.separated(
+          return ListView.builder(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             itemCount: state.mrfList.length,
-            separatorBuilder: (_, index) => Divider(),
+            padding: EdgeInsets.zero,
             itemBuilder: (_, index) {
-              return ListTile(
-                title: _getMrfTile(index, state.mrfList[index]),
-              );
+              return _getMrfTile(index, state.mrfList[index]);
             },
           );
         }
@@ -45,11 +43,20 @@ class MRFListView extends StatelessWidget {
 
   Widget _getMrfTile(int index, MrfData mrfData) {
     return Container(
+      margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+      // padding: EdgeInsets.symmetric(horizontal: 8.0),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(1.0)),
+        borderRadius: BorderRadius.all(Radius.circular(8.0)),
         color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 3,
+            offset: Offset(0, 3), // changes position of shadow
+          ),
+        ],
       ),
-      padding: EdgeInsets.all(8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -58,8 +65,11 @@ class MRFListView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Container(
-                color: mrfData.reqStatus == 0 ? Colors.orange : Colors.green,
-                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                padding: EdgeInsets.symmetric(horizontal: 4.0),
+                decoration: BoxDecoration(
+                  color: mrfData.reqStatus == 0 ? Colors.orange : Colors.green,
+                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                ),
                 child: Text(
                   mrfData.reqStatus == 0 ? 'Pending' : 'Approved',
                   style: TextStyle(
@@ -70,12 +80,20 @@ class MRFListView extends StatelessWidget {
               ),
             ],
           ),
-          _getTextView('Project', mrfData.project),
-          _getTextView('Description', mrfData.desc),
-          _getTextView('Req By', mrfData.createBy),
-          _getTextView('Req Data', mrfData.createdAt),
+          Container(
+            padding: EdgeInsets.only(left: 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _getTextView('Project', mrfData.project),
+                _getTextView('Description', mrfData.desc),
+                _getTextView('Req By', mrfData.createBy),
+                _getTextView('Req Data', mrfData.createdAt),
+              ],
+            ),
+          ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               AddOrViewStock(mrfData: mrfData),
               mrfData.reqStatus == 0 ? EditMrf(mrfData: mrfData) : SizedBox(),
@@ -136,16 +154,19 @@ class AddOrViewStock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FlatButton.icon(
-      icon: Icon(Icons.remove_red_eye, color: Colors.blueAccent),
-      label: Text(
-        mrfData.reqStatus == 0 ? 'Add Stock' : 'View stock',
-        style: TextStyle(color: Colors.blueAccent),
+    return Flexible(
+      flex: 3,
+      child: FlatButton.icon(
+        icon: Icon(Icons.remove_red_eye, color: Colors.blueAccent),
+        label: Text(
+          mrfData.reqStatus == 0 ? 'Add Stock' : 'View stock',
+          style: TextStyle(color: Colors.blueAccent),
+        ),
+        onPressed: () {
+          Navigator.of(context)
+              .pushNamed(RoutesName.stockDetail, arguments: mrfData.reqId);
+        },
       ),
-      onPressed: () {
-        Navigator.of(context)
-            .pushNamed(RoutesName.stockDetail, arguments: mrfData.reqId);
-      },
     );
   }
 }
@@ -157,16 +178,16 @@ class EditMrf extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FlatButton.icon(
-      icon: Icon(Icons.edit, color: Colors.orange),
-      label: Text(
-        'Edit',
-        style: TextStyle(color: Colors.orange),
+    return Flexible(
+      flex: 2,
+      child: FlatButton.icon(
+        icon: Icon(Icons.edit, color: Colors.orange),
+        label: Text('Edit', style: TextStyle(color: Colors.orange)),
+        onPressed: () {
+          Navigator.of(context)
+              .pushNamed(RoutesName.editMrf, arguments: mrfData.reqId);
+        },
       ),
-      onPressed: () {
-        Navigator.of(context)
-            .pushNamed(RoutesName.editMrf, arguments: mrfData.reqId);
-      },
     );
   }
 }
@@ -180,24 +201,48 @@ class DeleteMrf extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<MrfCrudBloc, MrfCrudState>(
-      listener: (_, state) {
-        if (state is MrfDeleteSuccess) {
-          context.bloc<MrfListBloc>()
-            ..add(FetchMRFs(isApprovedMrf: isApprovedMrf));
-        }
-      },
-      child: FlatButton.icon(
-        icon: Icon(Icons.delete, color: Colors.red),
-        label: Text(
-          'Delete',
-          style: TextStyle(color: Colors.red),
-        ),
-        onPressed: () {
-          context.bloc<MrfCrudBloc>()
-            ..add(DeleteMrfEvent(mrfId: mrfData.reqId));
+    return Flexible(
+      flex: 3,
+      child: BlocListener<MrfCrudBloc, MrfCrudState>(
+        listener: (_, state) {
+          if (state is MrfDeleteSuccess) {
+            context.bloc<MrfListBloc>()
+              ..add(FetchMRFs(isApprovedMrf: isApprovedMrf));
+          }
         },
+        child: FlatButton.icon(
+          icon: Icon(Icons.delete, color: Colors.red),
+          label: Text('Delete', style: TextStyle(color: Colors.red)),
+          onPressed: () => _showAlertDialog(context),
+        ),
       ),
     );
   }
+  _showAlertDialog(BuildContext context) {
+    // set up the buttons
+    Widget cancelButton = FlatButton(
+      child: Text('Cancel'),
+      onPressed: () => Navigator.of(context).pop(),
+    );
+    Widget continueButton = FlatButton(
+      child: Text('yes'),
+      onPressed: () {
+        context.bloc<MrfCrudBloc>()
+          ..add(DeleteMrfEvent(mrfId: mrfData.reqId));
+        Navigator.of(context).pop();
+      },
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text('Delete'),
+      content: Text('Press yes to delete item from list?'),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+    // show the dialog
+    showDialog(context: context, builder: (_) => alert);
+  }
+
 }

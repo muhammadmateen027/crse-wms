@@ -84,6 +84,7 @@ class MrfListBloc extends Bloc<MrfListEvent, MrfListState> {
           list.add(mrfList[index]);
         }
       }
+      return list;
     }
 
     for (int index = 0; index < mrfList.length; index++) {
