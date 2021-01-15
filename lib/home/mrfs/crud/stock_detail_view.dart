@@ -35,16 +35,19 @@ class _StockDetailViewState extends State<StockDetailView> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.orange,
         onPressed: isEditableFloating ? null : () => _boqListPage(context),
-        child: Icon(Icons.add, color: Colors.white,),
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
       body: BlocListener<MrfCrudBloc, MrfCrudState>(
         listener: (_, state) {
           if (state is StockDetailLoadedState) {
-           if(state.stockDetail.reqStatus == 0) {
-             setState(() {
-               isEditableFloating = true;
-             });
-           }
+            if (state.stockDetail.reqStatus == 0) {
+              setState(() {
+                isEditableFloating = true;
+              });
+            }
           }
         },
         child: SingleChildScrollView(
@@ -108,7 +111,8 @@ class StockInfoWidget extends StatelessWidget {
                           style: TextStyle(color: Colors.grey),
                         ),
                       )
-                    : Container(child: _stockListView(context, state.stockDetail)),
+                    : Container(
+                        child: _stockListView(context, state.stockDetail)),
                 SizedBox(height: 60),
               ],
             ),
@@ -140,17 +144,45 @@ class StockInfoWidget extends StatelessWidget {
           trailing: IconButton(
             icon: Icon(Icons.delete, color: Colors.red),
             onPressed: () {
-              context.bloc<MrfCrudBloc>()
-                ..add(
-                  DeleteStockEvent(
-                    reqId: stockDetail.reqId.toString(),
-                    stockId: stockDetail.stock[index].rid.toString(),),
-                );
+              showAlertDialog(
+                context,
+                stockDetail.reqId.toString(),
+                stockDetail.stock[index].rid.toString(),
+              );
             },
           ),
         );
       },
     );
+  }
+
+  showAlertDialog(BuildContext context, String reqId, String rId) {
+    // set up the buttons
+    Widget cancelButton = FlatButton(
+      child: Text('Cancel'),
+      onPressed: () => Navigator.of(context).pop(),
+    );
+    Widget continueButton = FlatButton(
+      child: Text('yes'),
+      onPressed: () {
+        context.bloc<MrfCrudBloc>()
+          ..add(
+            DeleteStockEvent(reqId: reqId, stockId: rId),
+          );
+        Navigator.of(context).pop();
+      },
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text('Delete'),
+      content: Text('Press yes to delete item from list?'),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+    // show the dialog
+    showDialog(context: context, builder: (_) => alert);
   }
 
   Widget _getStockDetail(StockDetail stockDetail) {

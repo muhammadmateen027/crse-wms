@@ -1,3 +1,4 @@
+import 'package:crsewms/custom_service/custom_service.dart';
 import 'package:crsewms/home/mrfs/crud/bloc/mrf_crud_bloc.dart';
 import 'package:crsewms/repository/model/mrfs/stocks.dart';
 import 'package:flutter/material.dart';
@@ -16,12 +17,14 @@ class StockFormPage extends StatefulWidget {
 class _StockFormPageState extends State<StockFormPage> {
   TextEditingController _quantityController = TextEditingController();
   TextEditingController _remarksController = TextEditingController();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   StockInfo stockInfo;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text('Add Stock'),
         backgroundColor: Colors.orange,
@@ -38,6 +41,33 @@ class _StockFormPageState extends State<StockFormPage> {
                 color: Colors.white,
               ),
               onPressed: () {
+                if (stockInfo == null) {
+                  CustomService.showMessage(
+                    _scaffoldKey,
+                    'Select stock from available list',
+                    backgroundColor: Colors.red,
+                  );
+                  return;
+                }
+
+                if (_quantityController.text?.isEmpty ?? true) {
+                  CustomService.showMessage(
+                    _scaffoldKey,
+                    'Select quantity for selected stock.',
+                    backgroundColor: Colors.red,
+                  );
+                  return;
+                }
+
+                if (_remarksController.text?.isEmpty ?? true) {
+                  CustomService.showMessage(
+                    _scaffoldKey,
+                    'Add remarks for selected stock.',
+                    backgroundColor: Colors.red,
+                  );
+                  return;
+                }
+
                 context.bloc<MrfCrudBloc>()
                   ..add(AddStockToMrf(
                     id: widget.id,
