@@ -8,6 +8,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'bloc/mrf_list_bloc.dart';
 
 class MRFListView extends StatelessWidget {
+  final bool isApprovedMrf;
+
+  const MRFListView({Key key, this.isApprovedMrf}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<MrfListBloc, MrfListState>(
@@ -75,7 +79,12 @@ class MRFListView extends StatelessWidget {
             children: [
               AddOrViewStock(mrfData: mrfData),
               mrfData.reqStatus == 0 ? EditMrf(mrfData: mrfData) : SizedBox(),
-              mrfData.reqStatus == 0 ? DeleteMrf(mrfData: mrfData) : SizedBox(),
+              mrfData.reqStatus == 0
+                  ? DeleteMrf(
+                      mrfData: mrfData,
+                      isApprovedMrf: isApprovedMrf,
+                    )
+                  : SizedBox(),
             ],
           )
         ],
@@ -104,12 +113,17 @@ class MRFListView extends StatelessWidget {
 }
 
 class ReloadMrfs extends StatelessWidget {
+  final bool isApprovedMrf;
+
+  const ReloadMrfs({Key key, this.isApprovedMrf}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return IconButton(
       icon: Icon(Icons.refresh, color: Colors.white),
       onPressed: () {
-        context.bloc<MrfListBloc>()..add(FetchMRFs());
+        context.bloc<MrfListBloc>()
+          ..add(FetchMRFs(isApprovedMrf: isApprovedMrf));
       },
     );
   }
@@ -158,16 +172,19 @@ class EditMrf extends StatelessWidget {
 }
 
 class DeleteMrf extends StatelessWidget {
-  DeleteMrf({Key key, @required this.mrfData}) : super(key: key);
+  DeleteMrf({Key key, @required this.mrfData, this.isApprovedMrf})
+      : super(key: key);
 
   final MrfData mrfData;
+  final bool isApprovedMrf;
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<MrfCrudBloc, MrfCrudState>(
       listener: (_, state) {
         if (state is MrfDeleteSuccess) {
-          context.bloc<MrfListBloc>()..add(FetchMRFs());
+          context.bloc<MrfListBloc>()
+            ..add(FetchMRFs(isApprovedMrf: isApprovedMrf));
         }
       },
       child: FlatButton.icon(

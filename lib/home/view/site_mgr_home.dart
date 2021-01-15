@@ -70,7 +70,9 @@ class _SiteManagerHomeState extends State<SiteManagerHome>
               }
             },
             child: SliverList(
-              delegate: SliverChildListDelegate(<Widget>[MRFListView()]),
+              delegate: SliverChildListDelegate(<Widget>[
+                MRFListView(isApprovedMrf: isApprovedMrf),
+              ]),
             ),
           ),
         ],
@@ -96,7 +98,7 @@ class _SiteManagerHomeState extends State<SiteManagerHome>
       title: Text('MRF List'),
       backgroundColor: Theme.of(context).primaryColor,
       actions: [
-        ReloadMrfs(),
+        ReloadMrfs(isApprovedMrf: isApprovedMrf),
         LogoutButton(),
       ],
       flexibleSpace: FlexibleSpaceBar(
@@ -120,7 +122,6 @@ class _SiteManagerHomeState extends State<SiteManagerHome>
                   color: Colors.white,
                   border: Border.all(color: Colors.white),
                 ),
-                padding: EdgeInsets.only(left: 8.0),
                 child: TextFormField(
                   autofocus: true,
                   keyboardType: TextInputType.text,
@@ -145,15 +146,24 @@ class _SiteManagerHomeState extends State<SiteManagerHome>
                 ),
               ),
               TabBar(
-                tabs: [Tab(text: 'Pending', ), Tab(text: 'Approved')],
+                labelColor: Colors.white,
+                indicatorColor: Colors.white,
+                tabs: [
+                  Tab(
+                    text: 'Pending',
+                  ),
+                  Tab(text: 'Approved')
+                ],
                 controller: controller,
                 onTap: (index) {
                   if (index == 0) {
                     setState(() => isApprovedMrf = false);
-                    context.bloc<MrfListBloc>()..add(FetchMRFs(isApprovedMrf: false));
+                    context.bloc<MrfListBloc>()
+                      ..add(FetchMRFs(isApprovedMrf: false));
                     return;
                   }
-                  context.bloc<MrfListBloc>()..add(FetchMRFs(isApprovedMrf: true));
+                  context.bloc<MrfListBloc>()
+                    ..add(FetchMRFs(isApprovedMrf: true));
                   setState(() => isApprovedMrf = true);
                 },
               )
