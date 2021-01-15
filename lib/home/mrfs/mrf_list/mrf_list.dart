@@ -73,19 +73,9 @@ class MRFListView extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              AddOrViewStock(
-                mrfData: mrfData,
-              ),
-              mrfData.reqStatus == 0
-                  ? EditMrf(
-                      mrfData: mrfData,
-                    )
-                  : SizedBox(),
-              mrfData.reqStatus == 0
-                  ? DeleteMrf(
-                      mrfData: mrfData,
-                    )
-                  : SizedBox(),
+              AddOrViewStock(mrfData: mrfData),
+              mrfData.reqStatus == 0 ? EditMrf(mrfData: mrfData) : SizedBox(),
+              mrfData.reqStatus == 0 ? DeleteMrf(mrfData: mrfData) : SizedBox(),
             ],
           )
         ],
@@ -135,7 +125,7 @@ class AddOrViewStock extends StatelessWidget {
     return FlatButton.icon(
       icon: Icon(Icons.remove_red_eye, color: Colors.blueAccent),
       label: Text(
-        'Add Stock',
+        mrfData.reqStatus == 0 ? 'Add Stock' : 'View stock',
         style: TextStyle(color: Colors.blueAccent),
       ),
       onPressed: () {

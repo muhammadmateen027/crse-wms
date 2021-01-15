@@ -119,6 +119,7 @@ class _SiteManagerHomeState extends State<SiteManagerHome> {
                 hintStyle: Theme.of(context).textTheme.caption,
                 border: InputBorder.none,
                 hintText: 'Search here...',
+                prefixIcon: Icon(Icons.search),
                 suffixIcon: IconButton(
                   icon: Icon(Icons.center_focus_weak),
                   onPressed: (){

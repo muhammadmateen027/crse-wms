@@ -15,38 +15,34 @@ class StockDetailView extends StatefulWidget {
 
 class _StockDetailViewState extends State<StockDetailView> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  bool isEditableFloating = false;
 
   @override
   void initState() {
     context.bloc<MrfCrudBloc>()
       ..add(GetStockDetailEvent(id: widget.argument.toString()));
     super.initState();
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    bool isEditableFloating = false;
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text('Stock detail'),
         backgroundColor: Colors.orange,
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: isEditableFloating ? FloatingActionButton(
         backgroundColor: Colors.orange,
-        onPressed: isEditableFloating ? null : () => _boqListPage(context),
-        child: Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-      ),
+        onPressed: () => _boqListPage(context),
+        child: Icon(Icons.add, color: Colors.white),
+      ) : null,
       body: BlocListener<MrfCrudBloc, MrfCrudState>(
         listener: (_, state) {
           if (state is StockDetailLoadedState) {
             if (state.stockDetail.reqStatus == 0) {
-              setState(() {
-                isEditableFloating = true;
-              });
+              setState(() => isEditableFloating = true);
             }
           }
         },
@@ -141,7 +137,7 @@ class StockInfoWidget extends StatelessWidget {
                   'Approved Quantity', stockDetail.stock[index].appQty),
             ],
           ),
-          trailing: IconButton(
+          trailing: stockDetail.reqStatus == 0 ? IconButton(
             icon: Icon(Icons.delete, color: Colors.red),
             onPressed: () {
               showAlertDialog(
@@ -150,7 +146,7 @@ class StockInfoWidget extends StatelessWidget {
                 stockDetail.stock[index].rid.toString(),
               );
             },
-          ),
+          ) : null,
         );
       },
     );
