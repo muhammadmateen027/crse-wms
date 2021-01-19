@@ -124,7 +124,6 @@ class _SiteManagerHomeState extends State<SiteManagerHome>
                   border: Border.all(color: Colors.white),
                 ),
                 child: TextFormField(
-                  autofocus: true,
                   keyboardType: TextInputType.text,
                   style: Theme.of(context).textTheme.headline6,
                   decoration: InputDecoration(

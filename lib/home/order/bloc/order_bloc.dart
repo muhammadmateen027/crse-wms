@@ -9,7 +9,9 @@ import 'package:crsewms/repository/repository.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:meta/meta.dart';
+import 'package:path_provider/path_provider.dart';
 
 part 'order_event.dart';
 
@@ -135,21 +137,30 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
   Stream<OrderState> _updateOrderStatus(UpdateOrderStatus event) async* {
     yield OrderLoading();
-    Response response;
     List list = event.arguments;
-    String base64Image = base64Encode(event.file.readAsBytesSync());
+
+    int timestamp = new DateTime.now().millisecondsSinceEpoch;
+    final dir = await getTemporaryDirectory();
+    final targetPath = '${dir.absolute.path}/$timestamp.jpg';
+
+    File compressedImageFile = await FlutterImageCompress.compressAndGetFile(
+      event.file.absolute.path,
+      targetPath,
+      quality: 60,
+    );
+
+    String base64Image = base64Encode(compressedImageFile.readAsBytesSync());
     Map map = {'req_id': list[0], 'status': '5', 'image': base64Image};
     map.addAll(await _getToken());
 
     try {
-      response = await userRepositoryInterface.orderStatusUpdate(map);
+      await userRepositoryInterface.orderStatusUpdate(map);
+      yield OrderUpdatedState();
+      return;
     } on ApiException catch (error) {
       yield OrderFailure(error: error.toString());
       return;
     }
-
-    yield OrderUpdatedState();
-    return;
   }
 
   Stream<OrderState> _searchOrderToState(SearchOrderEvent event) async* {
@@ -194,5 +205,17 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     map = {'email': user.split('::')[0], 'password': user.split('::')[1]};
 
     return map;
+  }
+
+  Future<File> compressAndGetFile(File file, String targetPath) async {
+    int timestamp = new DateTime.now().millisecondsSinceEpoch;
+    final dir = await getTemporaryDirectory();
+    final targetPath = '${dir.absolute.path}/$timestamp.jpg';
+
+    var result = await FlutterImageCompress.compressAndGetFile(
+      file.absolute.path, targetPath,
+      quality: 60,
+    );
+    return result;
   }
 }

@@ -178,7 +178,6 @@ class _OrderListState extends State<OrderList> {
             ),
             padding: EdgeInsets.only(left: 8.0),
             child: TextFormField(
-              autofocus: true,
               keyboardType: TextInputType.text,
               style: Theme.of(context).textTheme.headline6,
               decoration: InputDecoration(
