@@ -56,7 +56,7 @@ class MrfCrudBloc extends Bloc<MrfCrudEvent, MrfCrudState> {
     if (event is DeleteStockEvent) {
       yield* _deleteStockToState(event);
     }
-    if (event is UpdateMrfEvent){
+    if (event is UpdateMrfEvent) {
       yield* _updateMrfToState(event);
     }
 
@@ -107,6 +107,7 @@ class MrfCrudBloc extends Bloc<MrfCrudEvent, MrfCrudState> {
     yield MrfDeleteSuccess();
     return;
   }
+
   Stream<MrfCrudState> _deleteStockToState(DeleteStockEvent event) async* {
     yield MrfCrudLoading();
     Response response;
@@ -123,8 +124,7 @@ class MrfCrudBloc extends Bloc<MrfCrudEvent, MrfCrudState> {
     return;
   }
 
-  Stream<MrfCrudState> _getStockDetailToState(
-      String id) async* {
+  Stream<MrfCrudState> _getStockDetailToState(String id) async* {
     yield MrfCrudLoading();
     Response response;
     Map data = {'req_id': id};
@@ -158,24 +158,25 @@ class MrfCrudBloc extends Bloc<MrfCrudEvent, MrfCrudState> {
       return;
     }
 
-
     yield StockSavedSuccessState();
     return;
   }
 
   Stream<MrfCrudState> _getStockListToState(FetchStockList event) async* {
     yield MrfCrudLoading();
-    Response response;
+    Map data = {'mrf_id': event.mrfId};
+    data.addAll(await _getToken());
+
     try {
-      response = await userRepositoryInterface.listStock(await _getToken());
+      Response response = await userRepositoryInterface.listStock(data);
+
+      Stocks stocks = Stocks.fromJson(response.data);
+      yield StockListLoaded(stockList: stocks.stockList);
+      return;
     } on ApiException catch (error) {
       yield MrfCrudFailure(error: error.toString());
       return;
     }
-
-    Stocks stocks = Stocks.fromJson(response.data);
-    yield StockListLoaded(stockList: stocks.stockList);
-    return;
   }
 
   Stream<MrfCrudState> _saveMrfToState(SaveMrfEvent event) async* {

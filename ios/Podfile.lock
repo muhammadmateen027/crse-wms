@@ -4,25 +4,50 @@ PODS:
     - MTBBarcodeScanner
     - SwiftProtobuf
   - Flutter (1.0.0)
+  - flutter_image_compress (0.0.1):
+    - Flutter
+    - Mantle
+    - SDWebImageWebPCoder
   - flutter_secure_storage (3.3.1):
     - Flutter
   - image_picker (0.0.1):
     - Flutter
+  - libwebp (1.1.0):
+    - libwebp/demux (= 1.1.0)
+    - libwebp/mux (= 1.1.0)
+    - libwebp/webp (= 1.1.0)
+  - libwebp/demux (1.1.0):
+    - libwebp/webp
+  - libwebp/mux (1.1.0):
+    - libwebp/demux
+  - libwebp/webp (1.1.0)
+  - Mantle (2.1.2):
+    - Mantle/extobjc (= 2.1.2)
+  - Mantle/extobjc (2.1.2)
   - MTBBarcodeScanner (5.0.11)
   - path_provider (0.0.1):
     - Flutter
+  - SDWebImage/Core (5.9.1)
+  - SDWebImageWebPCoder (0.6.1):
+    - libwebp (~> 1.0)
+    - SDWebImage/Core (~> 5.7)
   - SwiftProtobuf (1.12.0)
 
 DEPENDENCIES:
   - barcode_scan (from `.symlinks/plugins/barcode_scan/ios`)
   - Flutter (from `Flutter`)
+  - flutter_image_compress (from `.symlinks/plugins/flutter_image_compress/ios`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
 
 SPEC REPOS:
   trunk:
+    - libwebp
+    - Mantle
     - MTBBarcodeScanner
+    - SDWebImage
+    - SDWebImageWebPCoder
     - SwiftProtobuf
 
 EXTERNAL SOURCES:
@@ -30,6 +55,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/barcode_scan/ios"
   Flutter:
     :path: Flutter
+  flutter_image_compress:
+    :path: ".symlinks/plugins/flutter_image_compress/ios"
   flutter_secure_storage:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
   image_picker:
@@ -40,10 +67,15 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   barcode_scan: a5c27959edfafaa0c771905bad0b29d6d39e4479
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  flutter_image_compress: 082f8daaf6c1b0c9fe798251c750ef0ecd98d7ae
   flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
   image_picker: 9c3312491f862b28d21ecd8fdf0ee14e601b3f09
+  libwebp: 946cb3063cea9236285f7e9a8505d806d30e07f3
+  Mantle: a0e7ccdc0f65e453a5174627cc062f9cd5746f47
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
+  SDWebImage: a990c053fff71e388a10f3357edb0be17929c9c5
+  SDWebImageWebPCoder: d0dac55073088d24b2ac1b191a71a8f8d0adac21
   SwiftProtobuf: 4ef85479c18ca85b5482b343df9c319c62bda699
 
 PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c

@@ -22,7 +22,6 @@ class _StockDetailViewState extends State<StockDetailView> {
     context.bloc<MrfCrudBloc>()
       ..add(GetStockDetailEvent(id: widget.argument.toString()));
     super.initState();
-    setState(() {});
   }
 
   @override
@@ -35,7 +34,7 @@ class _StockDetailViewState extends State<StockDetailView> {
       ),
       floatingActionButton: isEditableFloating ? FloatingActionButton(
         backgroundColor: Colors.orange,
-        onPressed: () => _boqListPage(context),
+        onPressed: () => _boqListPage(context, widget.argument.toString()),
         child: Icon(Icons.add, color: Colors.white),
       ) : null,
       body: BlocListener<MrfCrudBloc, MrfCrudState>(
@@ -59,8 +58,8 @@ class _StockDetailViewState extends State<StockDetailView> {
     );
   }
 
-  Future _boqListPage(BuildContext context) async {
-    context.bloc<MrfCrudBloc>()..add(FetchStockList());
+  Future _boqListPage(BuildContext context, String mrfId) async {
+    context.bloc<MrfCrudBloc>()..add(FetchStockList(mrfId: mrfId));
 
     await Navigator.of(context).push(
       MaterialPageRoute<void>(

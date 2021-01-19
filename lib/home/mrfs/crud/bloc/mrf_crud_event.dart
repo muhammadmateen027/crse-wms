@@ -11,7 +11,14 @@ class FetchBOQ extends MrfCrudEvent {}
 
 class FetchLocation extends MrfCrudEvent {}
 
-class FetchStockList extends MrfCrudEvent {}
+class FetchStockList extends MrfCrudEvent {
+  final String mrfId;
+
+  const FetchStockList({@required this.mrfId});
+
+  @override
+  List<Object> get props => [mrfId];
+}
 
 class DeleteMrfEvent extends MrfCrudEvent {
   final int mrfId;
