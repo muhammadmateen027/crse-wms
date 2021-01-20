@@ -18,18 +18,18 @@ class _EditMrfState extends State<EditMrf> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   String pickupLocationId, pickupLocationLabel;
   String dropOffLocationId, dropOffLocationLabel;
-  String descriptionController;
+  TextEditingController descriptionController = TextEditingController();
 
   @override
   void initState() {
+    super.initState();
     setState(() {
       pickupLocationId = widget.mrfData.originId;
       pickupLocationLabel = widget.mrfData.originName;
       dropOffLocationId = widget.mrfData.destinationId;
       dropOffLocationLabel = widget.mrfData.destinationName;
-      descriptionController = widget.mrfData.desc;
+      descriptionController.text = widget.mrfData.desc;
     });
-    super.initState();
   }
 
   @override
@@ -48,25 +48,25 @@ class _EditMrfState extends State<EditMrf> {
             SizedBox(height: 8.0),
             _getLabel('Stock / W.H. Location'),
             _getCustomDropDown(
-              (pickupLocationId?.isEmpty ?? true) ? 'Select here' : pickupLocationLabel,
+              (pickupLocationId?.isEmpty ?? true)
+                  ? 'Select here'
+                  : pickupLocationLabel,
               onTap: () {
                 _locationListViewPage(context, true);
               },
             ),
             _getLabel('Site delivery location'),
             _getCustomDropDown(
-              (dropOffLocationId?.isEmpty ?? true) ? 'Select here' : dropOffLocationLabel,
+              (dropOffLocationId?.isEmpty ?? true)
+                  ? 'Select here'
+                  : dropOffLocationLabel,
               onTap: () {
                 _locationListViewPage(context, false);
               },
             ),
             _getLabel('Description'),
             TextField(
-              onChanged: (value) {
-                setState(() {
-                  descriptionController = value;
-                });
-              },
+              controller: descriptionController,
               decoration: new InputDecoration(
                 border: new OutlineInputBorder(
                   borderRadius: const BorderRadius.all(
@@ -80,13 +80,49 @@ class _EditMrfState extends State<EditMrf> {
               ),
             ),
             SizedBox(height: 16.0),
-            UpdateButton(
-              pageContext: context,
-              dropOffLocationId: dropOffLocationId,
-              argument: widget.mrfData.reqId,
-              pickupLocationId: pickupLocationId,
-              description: descriptionController,
-              scaffoldKey: _scaffoldKey,
+            BlocConsumer<MrfCrudBloc, MrfCrudState>(
+              listener: (_, state) {
+                if (state is MrfCrudFailure) {
+                  _showToast(state.error, Colors.red);
+                  return;
+                }
+                if (state is MRFSavedState) {
+                  _showToast('MRF update successfully', Colors.green);
+                  return;
+                }
+              },
+              builder: (_, state) {
+                if (state is MrfCrudLoading) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                return Center(
+                  child: RaisedButton.icon(
+                    color: Colors.orange,
+                    icon: Icon(Icons.save, color: Colors.white),
+                    onPressed: () {
+                      if (widget.mrfData.reqId == null ||
+                          (pickupLocationId?.isEmpty ?? true) ||
+                          (dropOffLocationId?.isEmpty ?? true)) {
+                        _showToast('Missing form details', Colors.red);
+                        return;
+                      }
+
+                      context.bloc<MrfCrudBloc>()
+                        ..add(UpdateMrfEvent(
+                          reqId: widget.mrfData.reqId.toString(),
+                          pickupLocationId: pickupLocationId,
+                          dropOffLocationId: dropOffLocationId,
+                          description: descriptionController.text,
+                        ));
+                      return;
+                    },
+                    label: Text(
+                      'Update',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                );
+              },
             ),
           ],
         ),
@@ -122,17 +158,12 @@ class _EditMrfState extends State<EditMrf> {
       onTap: onTap,
       child: Container(
         padding: EdgeInsets.all(8.0),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey),
-        ),
+        decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(label),
-            Icon(
-              Icons.arrow_drop_down,
-              color: Colors.black87,
-            )
+            Icon(Icons.arrow_drop_down, color: Colors.black87)
           ],
         ),
       ),
@@ -154,75 +185,6 @@ class _EditMrfState extends State<EditMrf> {
           SizedBox(height: 8.0),
         ],
       );
-}
-
-class UpdateButton extends StatelessWidget {
-  UpdateButton({
-    Key key,
-    @required this.pageContext,
-    @required this.argument,
-    @required this.pickupLocationId,
-    @required this.dropOffLocationId,
-    @required this.description,
-    @required this.scaffoldKey,
-  }) : super(key: key);
-  final BuildContext pageContext;
-  final Object argument;
-  final String pickupLocationId;
-  final String dropOffLocationId;
-  final String description;
-  final GlobalKey<ScaffoldState> scaffoldKey;
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocConsumer<MrfCrudBloc, MrfCrudState>(
-      listener: (_, state) {
-        if (state is MrfCrudFailure) {
-          _showToast(state.error, Colors.red);
-          return;
-        }
-        if (state is MRFSavedState) {
-          _showToast('MRF update successfully', Colors.green);
-          return;
-        }
-      },
-      builder: (_, state) {
-        if (state is MrfCrudLoading) {
-          return Center(child: CircularProgressIndicator());
-        }
-        return Center(
-          child: RaisedButton.icon(
-            color: Colors.orange,
-            icon: Icon(
-              Icons.save,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              if (argument == null ||
-                  (pickupLocationId?.isEmpty ?? true) ||
-                  (dropOffLocationId?.isEmpty ?? true)) {
-                _showToast('Missing form details', Colors.red);
-                return;
-              }
-
-              context.bloc<MrfCrudBloc>()
-                ..add(UpdateMrfEvent(
-                  reqId: argument.toString(),
-                  pickupLocationId: pickupLocationId,
-                  dropOffLocationId: dropOffLocationId,
-                  description: description,
-                ));
-              return;
-            },
-            label: Text(
-              'Update',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        );
-      },
-    );
-  }
 
   _showToast(String message, Color color) {
     final snackBar = SnackBar(
@@ -230,6 +192,6 @@ class UpdateButton extends StatelessWidget {
       duration: Duration(seconds: 3),
       backgroundColor: color,
     );
-    scaffoldKey.currentState.showSnackBar(snackBar);
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 }

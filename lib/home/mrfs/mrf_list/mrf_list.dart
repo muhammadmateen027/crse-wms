@@ -44,7 +44,6 @@ class MRFListView extends StatelessWidget {
   Widget _getMrfTile(int index, MrfData mrfData) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
-      // padding: EdgeInsets.symmetric(horizontal: 8.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(8.0)),
         color: Colors.white,
@@ -96,12 +95,11 @@ class MRFListView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               AddOrViewStock(mrfData: mrfData),
-              mrfData.reqStatus == 0 ? EditMrf(mrfData: mrfData) : SizedBox(),
               mrfData.reqStatus == 0
-                  ? DeleteMrf(
-                      mrfData: mrfData,
-                      isApprovedMrf: isApprovedMrf,
-                    )
+                  ? EditMrf(mrfData: mrfData, isApprovedMrf: isApprovedMrf)
+                  : SizedBox(),
+              mrfData.reqStatus == 0
+                  ? DeleteMrf(mrfData: mrfData, isApprovedMrf: isApprovedMrf)
                   : SizedBox(),
             ],
           )
@@ -121,7 +119,9 @@ class MRFListView extends StatelessWidget {
             style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
             children: <TextSpan>[
               TextSpan(
-                  text: value, style: TextStyle(fontWeight: FontWeight.normal)),
+                text: value,
+                style: TextStyle(fontWeight: FontWeight.normal),
+              ),
             ],
           ),
         ),
@@ -172,9 +172,11 @@ class AddOrViewStock extends StatelessWidget {
 }
 
 class EditMrf extends StatelessWidget {
-  EditMrf({Key key, @required this.mrfData}) : super(key: key);
+  EditMrf({Key key, @required this.mrfData, @required this.isApprovedMrf})
+      : super(key: key);
 
   final MrfData mrfData;
+  final bool isApprovedMrf;
 
   @override
   Widget build(BuildContext context) {
@@ -183,9 +185,12 @@ class EditMrf extends StatelessWidget {
       child: FlatButton.icon(
         icon: Icon(Icons.edit, color: Colors.orange),
         label: Text('Edit', style: TextStyle(color: Colors.orange)),
-        onPressed: () {
-          Navigator.of(context)
+        onPressed: () async {
+          final result = await Navigator.of(context)
               .pushNamed(RoutesName.editMrf, arguments: mrfData);
+
+          context.bloc<MrfListBloc>()
+            ..add(FetchMRFs(isApprovedMrf: isApprovedMrf));
         },
       ),
     );
@@ -218,6 +223,7 @@ class DeleteMrf extends StatelessWidget {
       ),
     );
   }
+
   _showAlertDialog(BuildContext context) {
     // set up the buttons
     Widget cancelButton = FlatButton(
@@ -227,8 +233,7 @@ class DeleteMrf extends StatelessWidget {
     Widget continueButton = FlatButton(
       child: Text('yes'),
       onPressed: () {
-        context.bloc<MrfCrudBloc>()
-          ..add(DeleteMrfEvent(mrfId: mrfData.reqId));
+        context.bloc<MrfCrudBloc>()..add(DeleteMrfEvent(mrfId: mrfData.reqId));
         Navigator.of(context).pop();
       },
     );
@@ -244,5 +249,4 @@ class DeleteMrf extends StatelessWidget {
     // show the dialog
     showDialog(context: context, builder: (_) => alert);
   }
-
 }
