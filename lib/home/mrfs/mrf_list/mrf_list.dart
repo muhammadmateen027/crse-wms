@@ -185,7 +185,7 @@ class EditMrf extends StatelessWidget {
         label: Text('Edit', style: TextStyle(color: Colors.orange)),
         onPressed: () {
           Navigator.of(context)
-              .pushNamed(RoutesName.editMrf, arguments: mrfData.reqId);
+              .pushNamed(RoutesName.editMrf, arguments: mrfData);
         },
       ),
     );

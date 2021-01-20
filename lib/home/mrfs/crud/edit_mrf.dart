@@ -1,14 +1,14 @@
 import 'package:crsewms/home/mrfs/crud/crud.dart';
-import 'package:crsewms/repository/model/mrfs/boq_list.dart';
 import 'package:crsewms/repository/model/mrfs/location_list.dart';
+import 'package:crsewms/repository/model/mrfs/mrf_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'components/components.dart';
 
 class EditMrf extends StatefulWidget {
-  EditMrf({Key key, @required this.argument}) : super(key: key);
-  final Object argument;
+  EditMrf({Key key, @required this.mrfData}) : super(key: key);
+  final MrfData mrfData;
 
   @override
   _EditMrfState createState() => _EditMrfState();
@@ -16,9 +16,21 @@ class EditMrf extends StatefulWidget {
 
 class _EditMrfState extends State<EditMrf> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  Location pickupLocation;
-  Location dropOffLocation;
+  String pickupLocationId, pickupLocationLabel;
+  String dropOffLocationId, dropOffLocationLabel;
   String descriptionController;
+
+  @override
+  void initState() {
+    setState(() {
+      pickupLocationId = widget.mrfData.originId;
+      pickupLocationLabel = widget.mrfData.originName;
+      dropOffLocationId = widget.mrfData.destinationId;
+      dropOffLocationLabel = widget.mrfData.destinationName;
+      descriptionController = widget.mrfData.desc;
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,14 +48,14 @@ class _EditMrfState extends State<EditMrf> {
             SizedBox(height: 8.0),
             _getLabel('Stock / W.H. Location'),
             _getCustomDropDown(
-              pickupLocation == null ? 'Select here' : pickupLocation.name,
+              (pickupLocationId?.isEmpty ?? true) ? 'Select here' : pickupLocationLabel,
               onTap: () {
                 _locationListViewPage(context, true);
               },
             ),
             _getLabel('Site delivery location'),
             _getCustomDropDown(
-              dropOffLocation == null ? 'Select here' : dropOffLocation.name,
+              (dropOffLocationId?.isEmpty ?? true) ? 'Select here' : dropOffLocationLabel,
               onTap: () {
                 _locationListViewPage(context, false);
               },
@@ -70,9 +82,9 @@ class _EditMrfState extends State<EditMrf> {
             SizedBox(height: 16.0),
             UpdateButton(
               pageContext: context,
-              dropOffLocation: dropOffLocation,
-              argument: widget.argument,
-              pickupLocation: pickupLocation,
+              dropOffLocationId: dropOffLocationId,
+              argument: widget.mrfData.reqId,
+              pickupLocationId: pickupLocationId,
               description: descriptionController,
               scaffoldKey: _scaffoldKey,
             ),
@@ -95,9 +107,11 @@ class _EditMrfState extends State<EditMrf> {
     if (location != null) {
       setState(() {
         if (isPickupLocation) {
-          pickupLocation = location;
+          pickupLocationId = location.id.toString();
+          pickupLocationLabel = location.name;
         } else {
-          dropOffLocation = location;
+          dropOffLocationId = location.id.toString();
+          dropOffLocationLabel = location.name;
         }
       });
     }
@@ -147,15 +161,15 @@ class UpdateButton extends StatelessWidget {
     Key key,
     @required this.pageContext,
     @required this.argument,
-    @required this.pickupLocation,
-    @required this.dropOffLocation,
+    @required this.pickupLocationId,
+    @required this.dropOffLocationId,
     @required this.description,
     @required this.scaffoldKey,
   }) : super(key: key);
   final BuildContext pageContext;
   final Object argument;
-  final Location pickupLocation;
-  final Location dropOffLocation;
+  final String pickupLocationId;
+  final String dropOffLocationId;
   final String description;
   final GlobalKey<ScaffoldState> scaffoldKey;
 
@@ -185,8 +199,8 @@ class UpdateButton extends StatelessWidget {
             ),
             onPressed: () {
               if (argument == null ||
-                  pickupLocation == null ||
-                  dropOffLocation == null) {
+                  (pickupLocationId?.isEmpty ?? true) ||
+                  (dropOffLocationId?.isEmpty ?? true)) {
                 _showToast('Missing form details', Colors.red);
                 return;
               }
@@ -194,8 +208,8 @@ class UpdateButton extends StatelessWidget {
               context.bloc<MrfCrudBloc>()
                 ..add(UpdateMrfEvent(
                   reqId: argument.toString(),
-                  pickupLocation: pickupLocation,
-                  dropOffLocation: dropOffLocation,
+                  pickupLocationId: pickupLocationId,
+                  dropOffLocationId: dropOffLocationId,
                   description: description,
                 ));
               return;

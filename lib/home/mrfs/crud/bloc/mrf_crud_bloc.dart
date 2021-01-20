@@ -94,56 +94,53 @@ class MrfCrudBloc extends Bloc<MrfCrudEvent, MrfCrudState> {
 
   Stream<MrfCrudState> _deleteMrfToState(DeleteMrfEvent event) async* {
     yield MrfCrudLoading();
-    Response response;
     Map data = {'req_id': event.mrfId};
     data.addAll(await _getToken());
     try {
-      response = await userRepositoryInterface.deleteMrf(data);
+      await userRepositoryInterface.deleteMrf(data);
+
+      yield MrfDeleteSuccess();
+      return;
     } on ApiException catch (error) {
       yield MrfCrudFailure(error: error.toString());
       return;
     }
-
-    yield MrfDeleteSuccess();
-    return;
   }
 
   Stream<MrfCrudState> _deleteStockToState(DeleteStockEvent event) async* {
     yield MrfCrudLoading();
-    Response response;
     Map data = {'reqstock_id': event.stockId};
     data.addAll(await _getToken());
     try {
-      response = await userRepositoryInterface.deleteStockFromMrf(data);
+      await userRepositoryInterface.deleteStockFromMrf(data);
+
+      yield* _getStockDetailToState(event.reqId);
+      return;
     } on ApiException catch (error) {
       yield MrfCrudFailure(error: error.toString());
       return;
     }
 
-    yield* _getStockDetailToState(event.reqId);
-    return;
   }
 
   Stream<MrfCrudState> _getStockDetailToState(String id) async* {
     yield MrfCrudLoading();
-    Response response;
     Map data = {'req_id': id};
     data.addAll(await _getToken());
     try {
-      response = await userRepositoryInterface.mrfStockDetail(data);
+      Response response = await userRepositoryInterface.mrfStockDetail(data);
+
+      StockDetail stockDetail = StockDetail.fromJson(response.data);
+      yield StockDetailLoadedState(stockDetail: stockDetail);
+      return;
     } on ApiException catch (error) {
       yield MrfCrudFailure(error: error.toString());
       return;
     }
-
-    StockDetail stockDetail = StockDetail.fromJson(response.data);
-    yield StockDetailLoadedState(stockDetail: stockDetail);
-    return;
   }
 
   Stream<MrfCrudState> _saveStockToMrfToState(AddStockToMrf event) async* {
     yield MrfCrudLoading();
-    Response response;
     Map data = {
       'req_id': event.id,
       'stock_id': event.stockId,
@@ -152,14 +149,14 @@ class MrfCrudBloc extends Bloc<MrfCrudEvent, MrfCrudState> {
     };
     data.addAll(await _getToken());
     try {
-      response = await userRepositoryInterface.saveStockToMrf(data);
+      await userRepositoryInterface.saveStockToMrf(data);
+
+      yield StockSavedSuccessState();
+      return;
     } on ApiException catch (error) {
       yield MrfCrudFailure(error: error.toString());
       return;
     }
-
-    yield StockSavedSuccessState();
-    return;
   }
 
   Stream<MrfCrudState> _getStockListToState(FetchStockList event) async* {
@@ -181,7 +178,6 @@ class MrfCrudBloc extends Bloc<MrfCrudEvent, MrfCrudState> {
 
   Stream<MrfCrudState> _saveMrfToState(SaveMrfEvent event) async* {
     yield MrfCrudLoading();
-    Response response;
     Map data = {
       'boq_id': event.boq.id,
       'stock_location': event.pickupLocation.id,
@@ -190,35 +186,33 @@ class MrfCrudBloc extends Bloc<MrfCrudEvent, MrfCrudState> {
     };
     data.addAll(await _getToken());
     try {
-      response = await userRepositoryInterface.saveMrf(data);
+      await userRepositoryInterface.saveMrf(data);
+
+      yield MRFSavedState();
+      return;
     } on ApiException catch (error) {
       yield MrfCrudFailure(error: error.toString());
       return;
     }
-
-    yield MRFSavedState();
-    return;
   }
 
   Stream<MrfCrudState> _updateMrfToState(UpdateMrfEvent event) async* {
     yield MrfCrudLoading();
-    Response response;
     Map data = {
       'req_id': event.reqId,
-      'stock_location': event.pickupLocation.id,
-      'delivery_location': event.dropOffLocation.id,
+      'stock_location': event.pickupLocationId,
+      'delivery_location': event.dropOffLocationId,
       'description': event.description,
     };
     data.addAll(await _getToken());
     try {
-      response = await userRepositoryInterface.updateMrf(data);
+      await userRepositoryInterface.updateMrf(data);
+      yield MRFSavedState();
+      return;
     } on ApiException catch (error) {
       yield MrfCrudFailure(error: error.toString());
       return;
     }
-
-    yield MRFSavedState();
-    return;
   }
 
   Stream<MrfCrudState> _fetchBoqToState(FetchBOQ event) async* {

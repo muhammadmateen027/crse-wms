@@ -60,7 +60,7 @@ class RouteGenerator {
 
       case RoutesName.editMrf:
         return MaterialPageRoute(
-          builder: (_) => EditMrf(argument: args),
+          builder: (_) => EditMrf(mrfData: args),
         );
         break;
 
