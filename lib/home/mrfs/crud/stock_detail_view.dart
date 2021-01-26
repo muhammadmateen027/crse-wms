@@ -39,9 +39,8 @@ class _StockDetailViewState extends State<StockDetailView> {
               onPressed: () => _boqListPage(
                 context,
                 widget.argument.toString(),
-                //TODO: Add from stock info
-                'MRF is here',
-                'BOQ is here',
+                stockDetail.document,
+                stockDetail.boqNumber,
               ),
               child: Icon(Icons.add, color: Colors.white),
             )
@@ -205,7 +204,9 @@ class StockInfoWidget extends StatelessWidget {
         children: [
           _detailLabelView('Project', stockDetail.project),
           SizedBox(height: 8),
-          _detailLabelView('Document', stockDetail.document),
+          _detailLabelView('MRF No.', stockDetail.document),
+          SizedBox(height: 8),
+          _detailLabelView('BOQ No', stockDetail.boqNumber),
           SizedBox(height: 8),
           _detailLabelView('Description', stockDetail.desc),
           SizedBox(height: 8),

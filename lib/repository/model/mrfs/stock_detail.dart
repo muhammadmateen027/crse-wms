@@ -16,6 +16,7 @@ class StockDetail {
   String destinationAddress;
   String destinationZip;
   String destinationState;
+  String boqNumber;
   List<Stock> stock;
 
   StockDetail(
@@ -36,6 +37,7 @@ class StockDetail {
         this.destinationAddress,
         this.destinationZip,
         this.destinationState,
+        this.boqNumber,
         this.stock});
 
   StockDetail.fromJson(Map<String, dynamic> json) {
@@ -56,6 +58,7 @@ class StockDetail {
     destinationAddress = json['destination_address'];
     destinationZip = json['destination_zip'];
     destinationState = json['destination_state'];
+    boqNumber = json['boq_number'];
     if (json['success'] != null) {
       stock = new List<Stock>();
       json['success'].forEach((v) {
