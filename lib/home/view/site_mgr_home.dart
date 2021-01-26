@@ -148,12 +148,7 @@ class _SiteManagerHomeState extends State<SiteManagerHome>
               TabBar(
                 labelColor: Colors.white,
                 indicatorColor: Colors.white,
-                tabs: [
-                  Tab(
-                    text: 'Pending',
-                  ),
-                  Tab(text: 'Approved')
-                ],
+                tabs: [Tab(text: 'Pending'), Tab(text: 'Approved')],
                 controller: controller,
                 onTap: (index) {
                   if (index == 0) {

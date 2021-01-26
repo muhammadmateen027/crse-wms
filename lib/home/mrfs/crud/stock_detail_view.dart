@@ -16,6 +16,7 @@ class StockDetailView extends StatefulWidget {
 class _StockDetailViewState extends State<StockDetailView> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   bool isEditableFloating = false;
+  StockDetail stockDetail;
 
   @override
   void initState() {
@@ -32,16 +33,27 @@ class _StockDetailViewState extends State<StockDetailView> {
         title: Text('Stock detail'),
         backgroundColor: Colors.orange,
       ),
-      floatingActionButton: isEditableFloating ? FloatingActionButton(
-        backgroundColor: Colors.orange,
-        onPressed: () => _boqListPage(context, widget.argument.toString()),
-        child: Icon(Icons.add, color: Colors.white),
-      ) : null,
+      floatingActionButton: isEditableFloating
+          ? FloatingActionButton(
+              backgroundColor: Colors.orange,
+              onPressed: () => _boqListPage(
+                context,
+                widget.argument.toString(),
+                //TODO: Add from stock info
+                'MRF is here',
+                'BOQ is here',
+              ),
+              child: Icon(Icons.add, color: Colors.white),
+            )
+          : null,
       body: BlocListener<MrfCrudBloc, MrfCrudState>(
         listener: (_, state) {
           if (state is StockDetailLoadedState) {
             if (state.stockDetail.reqStatus == 0) {
-              setState(() => isEditableFloating = true);
+              setState(() {
+                isEditableFloating = true;
+                stockDetail = state.stockDetail;
+              });
             }
           }
         },
@@ -58,13 +70,16 @@ class _StockDetailViewState extends State<StockDetailView> {
     );
   }
 
-  Future _boqListPage(BuildContext context, String mrfId) async {
+  Future _boqListPage(BuildContext context, String mrfId, String mrfNo, String boqNo) async {
     context.bloc<MrfCrudBloc>()..add(FetchStockList(mrfId: mrfId));
 
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (BuildContext _) =>
-            StockFormPage(id: widget.argument.toString()),
+        builder: (BuildContext _) => StockFormPage(
+          id: widget.argument.toString(),
+          mrfNo: mrfNo,
+          boqNo: boqNo,
+        ),
         fullscreenDialog: true,
       ),
     );
@@ -136,16 +151,18 @@ class StockInfoWidget extends StatelessWidget {
                   'Approved Quantity', stockDetail.stock[index].appQty),
             ],
           ),
-          trailing: stockDetail.reqStatus == 0 ? IconButton(
-            icon: Icon(Icons.delete, color: Colors.red),
-            onPressed: () {
-              showAlertDialog(
-                context,
-                stockDetail.reqId.toString(),
-                stockDetail.stock[index].rid.toString(),
-              );
-            },
-          ) : null,
+          trailing: stockDetail.reqStatus == 0
+              ? IconButton(
+                  icon: Icon(Icons.delete, color: Colors.red),
+                  onPressed: () {
+                    showAlertDialog(
+                      context,
+                      stockDetail.reqId.toString(),
+                      stockDetail.stock[index].rid.toString(),
+                    );
+                  },
+                )
+              : null,
         );
       },
     );

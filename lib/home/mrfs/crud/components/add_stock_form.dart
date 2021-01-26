@@ -7,8 +7,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'components.dart';
 
 class StockFormPage extends StatefulWidget {
-  StockFormPage({Key key, @required this.id}) : super(key: key);
+  StockFormPage({
+    Key key,
+    @required this.id,
+    @required this.mrfNo,
+    @required this.boqNo,
+  }) : super(key: key);
   final String id;
+  final String mrfNo;
+  final String boqNo;
 
   @override
   _StockFormPageState createState() => _StockFormPageState();
@@ -85,17 +92,31 @@ class _StockFormPageState extends State<StockFormPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 16),
+            SizedBox(height: 8),
+            _getTextView('MRF No.', widget.mrfNo),
+            _getTextView('BOQ No.', widget.boqNo),
+            SizedBox(height: 16, child: Divider()),
             Text(
               'Available stock',
               style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
             ),
+            SizedBox(height: 4),
             GestureDetector(
               onTap: () => _boqListPage(context),
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(8.0)),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.0),
+                  border: Border.all(color: Colors.black12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.1),
+                      spreadRadius: 2,
+                      blurRadius: 2,
+                      offset: Offset(0, 3), // changes position of shadow
+                    ),
+                  ]
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -148,6 +169,27 @@ class _StockFormPageState extends State<StockFormPage> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _getTextView(String label, String value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: 8.0),
+        RichText(
+          text: TextSpan(
+            text: '$label: ',
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+            children: <TextSpan>[
+              TextSpan(
+                text: value,
+                style: TextStyle(fontWeight: FontWeight.normal),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 

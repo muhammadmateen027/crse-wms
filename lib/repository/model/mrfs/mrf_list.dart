@@ -41,6 +41,7 @@ class MrfData {
   String destinationState;
   String originId;
   String destinationId;
+  String boqNumber;
 
   MrfData(
       {this.reqId,
@@ -62,6 +63,7 @@ class MrfData {
         this.destinationState,
         this.originId,
         this.destinationId,
+        this.boqNumber,
       });
 
   MrfData.fromJson(Map<String, dynamic> json) {
@@ -84,6 +86,7 @@ class MrfData {
     destinationState = json['destination_state'];
     originId = json['origin_id'].toString();
     destinationId = json['destination_id'].toString();
+    boqNumber = json['boq_number'].toString();
   }
 
   Map<String, dynamic> toJson() {
