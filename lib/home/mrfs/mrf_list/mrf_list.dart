@@ -85,11 +85,11 @@ class MRFListView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _getTextView('Project', mrfData.project),
+                _getTextView('BOQ No.', mrfData.boqNumber),
+                _getTextView('MRF No.', mrfData.document),
                 _getTextView('Description', mrfData.desc),
                 _getTextView('Req By', mrfData.createBy),
                 _getTextView('Req Data', mrfData.createdAt),
-                _getTextView('BOQ No.', mrfData.boqNumber),
-                _getTextView('MRF No.', mrfData.document),
               ],
             ),
           ),

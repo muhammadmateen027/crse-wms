@@ -204,9 +204,9 @@ class StockInfoWidget extends StatelessWidget {
         children: [
           _detailLabelView('Project', stockDetail.project),
           SizedBox(height: 8),
-          _detailLabelView('MRF No.', stockDetail.document),
-          SizedBox(height: 8),
           _detailLabelView('BOQ No', stockDetail.boqNumber),
+          SizedBox(height: 8),
+          _detailLabelView('MRF No.', stockDetail.document),
           SizedBox(height: 8),
           _detailLabelView('Description', stockDetail.desc),
           SizedBox(height: 8),

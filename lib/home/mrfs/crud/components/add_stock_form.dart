@@ -93,9 +93,9 @@ class _StockFormPageState extends State<StockFormPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 8),
-            _getTextView('MRF No.', widget.mrfNo),
             _getTextView('BOQ No.', widget.boqNo),
-            SizedBox(height: 16, child: Divider()),
+            _getTextView('MRF No.', widget.mrfNo),
+            SizedBox(height: 32, child: Divider()),
             Text(
               'Available stock',
               style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
